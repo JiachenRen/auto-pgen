@@ -56,7 +56,7 @@ public class Item {
                 } else if (line.contains("link")) {
                     link = extractContent(line);
                 } else if (line.contains("snippet")) {
-                    snippet = extractContent(line).replace("\\n", "");
+                    snippet = extractContent(line).replace("\\n", "").replace("\\\"", "\"");
                 } else if (line.contains("displayLink")) {
                     displayLink = extractContent(line);
                 }

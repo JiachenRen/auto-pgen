@@ -11,9 +11,7 @@ import simplenlg.framework.WordElement;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.realiser.english.Realiser;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.StringJoiner;
+import java.util.*;
 
 
 /**
@@ -26,25 +24,105 @@ public class Generator {
     private static Lexicon lexicon = Lexicon.getDefaultLexicon();
     private static NLGFactory nlgFactory = new NLGFactory(lexicon);
     private static Realiser realiser = new Realiser(lexicon);
-    private static ArrayList<String> ignoredVerbs = new ArrayList<>();
+    private static ArrayList<String> ignoredVerbs;
+    private static ArrayList<String> ignoredPatterns;
+    private static ArrayList<String> abbreviations;
+    private static ArrayList<Character> endings;
 
     static {
         String[] arr = Extractor.read("./resources/ignored_verbs.txt").split("\n");
+        ignoredVerbs = new ArrayList<>();
         Collections.addAll(ignoredVerbs, arr);
+
+        arr = Extractor.read("./resources/ignored_patterns.txt").split("\n");
+        ignoredPatterns = new ArrayList<>();
+        Collections.addAll(ignoredPatterns, arr);
+
+        arr = Extractor.read("./resources/abbreviations.txt").split("\n");
+        abbreviations = new ArrayList<>();
+        Collections.addAll(abbreviations, arr);
+
+
+        endings = new ArrayList<>();
+        Collections.addAll(endings, '.', '!', '?');
     }
 
     Generator(ArrayList<Item> items) {
         this.items = items;
         try {
             this.dict = Dictionary.getDefaultResourceInstance();
-            this.getSynonyms(POS.ADJECTIVE, "thoughtful").forEach(System.out::println);
-            System.out.println(getVerbTense("stolen"));
+//            this.getSynonyms(POS.ADJECTIVE, "thoughtful").forEach(System.out::println);
+//            System.out.println(getVerbTense("stolen"));
         } catch (JWNLException e) {
             e.printStackTrace();
         }
-        String modified = replaceVerbs("Manifest Destiny refers to a period of violence", false, false, 1);
-        System.out.println(modified);
-// System.out.println(conjugate(lexicon.getWord("sware", LexicalCategory.VERB), Form.PRESENT_PARTICIPLE));
+//        String modified = replaceVerbs("Manifest Destiny refers to a period of violence", false, false, 1);
+//        System.out.println(modified);
+//        System.out.println(conjugate(lexicon.getWord("sware", LexicalCategory.VERB), Form.PRESENT_PARTICIPLE));
+    }
+
+    public String generateSimpleParagraph() {
+        ArrayList<String> pool = new ArrayList<>();
+        items.forEach(item -> {
+            pool.addAll(getSentences(item.getSnippet()));
+        });
+        shuffle(pool);
+        final String[] paragraph = {""};
+        pool.forEach(sentence -> paragraph[0] += replaceVerbs(sentence, false, false, 0.5));
+        return paragraph[0];
+    }
+
+    private void shuffle(ArrayList<String> arrList) {
+        ArrayList<String> shuffled = new ArrayList<>();
+        while (arrList.size() > 0) {
+            int idx = (int) (Math.random() * arrList.size());
+            shuffled.add(arrList.remove(idx));
+        }
+        arrList.addAll(shuffled);
+    }
+
+    private ArrayList<String> getSentences(String paragraph) {
+        ArrayList<String> sentences = new ArrayList<>();
+        String sentence = "";
+        char[] charArray = paragraph.toCharArray();
+        for (int i = 0; i < charArray.length; i++) {
+            char c = charArray[i], next = ' ';
+            if (i <= charArray.length - 2) {
+                next = charArray[i + 1];
+            }
+            boolean isAbbreviation = (i > 0 && Character.toUpperCase(charArray[i - 1]) == charArray[i - 1]);
+            if (!isAbbreviation && endings.contains(c) && (next == '\"' || next == ' ')) {
+                boolean endOfSentence = true;
+                final int idx = i;
+                for (String abbr : abbreviations) {
+                    if (paragraph.substring(0, idx).toLowerCase().endsWith(" " + abbr))
+                        endOfSentence = false;
+                }
+                if (endOfSentence) {
+                    sentence += c + "" + next;
+                    if (isValidSentence(sentence))
+                        sentences.add(sentence);
+                    sentence = "";
+                    i += 1;
+                    continue;
+                }
+            }
+            sentence += c;
+        }
+        return sentences;
+    }
+
+    private boolean isValidSentence(String sentence) {
+        if (sentence.split(" ").length < 4) return false;
+        for (String pattern : ignoredPatterns) {
+            if (pattern.contains(" <ignore case>")) {
+                pattern = pattern.replace(" <ignore case>", "");
+                if (sentence.toLowerCase().contains(pattern.toLowerCase()))
+                    return false;
+            } else if (sentence.contains(pattern))
+                return false;
+        }
+        return true;
     }
 
     private ArrayList<String> getSynonyms(POS pos, String word) throws JWNLException {
@@ -66,7 +144,7 @@ public class Generator {
         return synonyms;
     }
 
-    //TODO: when returned synonym contains two words, conjugate the first one.
+
     private String replaceVerbs(String org, boolean allowNounAsVerbs, boolean ignoreInfinitive, double ratio) {
         String words[] = org.split(" ");
         String output = "";
