@@ -19,8 +19,12 @@ import java.util.*;
  * Generate a paragraph from the resources collected over the internet.
  */
 public class Generator {
-    private ArrayList<Item> items;
     private Dictionary dict;
+    private boolean allowNounAsVerbs;
+    private boolean ignoreInfinitive;
+    private boolean swapVerbs;
+    private double swapRatio;
+    private boolean debug = false;
     private static Lexicon lexicon = Lexicon.getDefaultLexicon();
     private static NLGFactory nlgFactory = new NLGFactory(lexicon);
     private static Realiser realiser = new Realiser(lexicon);
@@ -47,28 +51,35 @@ public class Generator {
         Collections.addAll(endings, '.', '!', '?');
     }
 
-    Generator(ArrayList<Item> items) {
-        this.items = items;
+    Generator() {
+        this(true, 0.5);
+    }
+
+    Generator(boolean swapVerbs, double swapRatio) {
         try {
             this.dict = Dictionary.getDefaultResourceInstance();
-//            this.getSynonyms(POS.ADJECTIVE, "thoughtful").forEach(System.out::println);
-//            System.out.println(getVerbTense("stolen"));
         } catch (JWNLException e) {
             e.printStackTrace();
         }
-//        String modified = replaceVerbs("Manifest Destiny refers to a period of violence", false, false, 1);
-//        System.out.println(modified);
-//        System.out.println(conjugate(lexicon.getWord("sware", LexicalCategory.VERB), Form.PRESENT_PARTICIPLE));
+        this.allowNounAsVerbs = false;
+        this.ignoreInfinitive = false;
+        this.swapVerbs = swapVerbs;
+        this.swapRatio = swapRatio;
     }
 
-    public String generateSimpleParagraph() {
+    public String generateSimpleParagraph(ArrayList<Item> items, int numSentences) {
         ArrayList<String> pool = new ArrayList<>();
         items.forEach(item -> {
             pool.addAll(getSentences(item.getSnippet()));
         });
         shuffle(pool);
         final String[] paragraph = {""};
-        pool.forEach(sentence -> paragraph[0] += replaceVerbs(sentence, false, false, 0.5));
+        for (int i = 0; i < pool.size(); i++) {
+            String sentence = pool.get(i);
+            if (swapVerbs) sentence = replaceVerbs(sentence, swapRatio);
+            paragraph[0] += sentence;
+            if (i == numSentences - 1) return paragraph[0];
+        }
         return paragraph[0];
     }
 
@@ -93,9 +104,8 @@ public class Generator {
             boolean isAbbreviation = (i > 0 && Character.toUpperCase(charArray[i - 1]) == charArray[i - 1]);
             if (!isAbbreviation && endings.contains(c) && (next == '\"' || next == ' ')) {
                 boolean endOfSentence = true;
-                final int idx = i;
                 for (String abbr : abbreviations) {
-                    if (paragraph.substring(0, idx).toLowerCase().endsWith(" " + abbr))
+                    if (paragraph.substring(0, i).toLowerCase().endsWith(" " + abbr.toLowerCase()))
                         endOfSentence = false;
                 }
                 if (endOfSentence) {
@@ -113,7 +123,9 @@ public class Generator {
     }
 
     private boolean isValidSentence(String sentence) {
-        if (sentence.split(" ").length < 4) return false;
+        if (sentence.split(" ").length < 4) {
+            return false;
+        }
         for (String pattern : ignoredPatterns) {
             if (pattern.contains(" <ignore case>")) {
                 pattern = pattern.replace(" <ignore case>", "");
@@ -145,7 +157,7 @@ public class Generator {
     }
 
 
-    private String replaceVerbs(String org, boolean allowNounAsVerbs, boolean ignoreInfinitive, double ratio) {
+    private String replaceVerbs(String org, double ratio) {
         String words[] = org.split(" ");
         String output = "";
         for (String word : words) {
@@ -192,6 +204,7 @@ public class Generator {
                             break;
                     }
                     word += postfix;
+                    if (debug) word = "<" + word + ">";
                 }
             }
             output += word + punctuation + " ";
@@ -252,5 +265,13 @@ public class Generator {
             e.printStackTrace();
         }
         return "";
+    }
+
+    void setAllowNounAsVerbs(boolean b) {
+        allowNounAsVerbs = b;
+    }
+
+    void setIgnoreInfinitive(boolean b) {
+        ignoreInfinitive = b;
     }
 }

@@ -17,6 +17,7 @@ import java.net.URLEncoder;
 class Extractor {
     private static String[] API_KEYS = read("./resources/api_keys.txt").split("\n");
     private static String ENCODING = "UTF-8";
+    private static boolean debug = false;
 
     static String search(String keyword) {
         try {
@@ -30,7 +31,7 @@ class Extractor {
             BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
             String output, acc = "";
-            System.out.println("Response successfully retrieved from net...");
+            if (debug) System.out.println("Response successfully retrieved from net...");
             while ((output = br.readLine()) != null) {
                 acc += output + "\n";
             }
@@ -51,7 +52,7 @@ class Extractor {
             if (listOfFiles == null || listOfFiles.length == 0) return "";
             for (File file : listOfFiles) {
                 if (file.isFile() && file.getName().equals(encoded + ".txt")) {
-                    System.out.println("retrieving from cache...");
+                    if (debug) System.out.println("retrieving from cache...");
                     return read(file.getPath());
                 }
             }

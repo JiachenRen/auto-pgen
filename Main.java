@@ -12,8 +12,8 @@ public class Main {
 //        System.out.println("Detailed: \n" + generateParagraph(items) + "\n");
 //        System.out.println("Simple: \n" + generateSimpleParagraph(items) + "\n");
 
-        Generator gen = new Generator(Item.extractItemsFrom(Extractor.search("George Washington")));
-        System.out.println(gen.generateSimpleParagraph());
+        Generator gen = new Generator();
+        System.out.println(gen.generateSimpleParagraph(Item.extractItemsFrom(Extractor.search("urbanization")), 5));
     }
 
     private static String getTestResponse() {
