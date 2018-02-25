@@ -12,6 +12,8 @@ import simplenlg.lexicon.Lexicon;
 import simplenlg.realiser.english.Realiser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.StringJoiner;
 
 
 /**
@@ -24,6 +26,12 @@ public class Generator {
     private static Lexicon lexicon = Lexicon.getDefaultLexicon();
     private static NLGFactory nlgFactory = new NLGFactory(lexicon);
     private static Realiser realiser = new Realiser(lexicon);
+    private static ArrayList<String> ignoredVerbs = new ArrayList<>();
+
+    static {
+        String[] arr = Extractor.read("./resources/ignored_verbs.txt").split("\n");
+        Collections.addAll(ignoredVerbs, arr);
+    }
 
     Generator(ArrayList<Item> items) {
         this.items = items;
@@ -34,7 +42,9 @@ public class Generator {
         } catch (JWNLException e) {
             e.printStackTrace();
         }
-        System.out.println(conjugate(lexicon.getWord("think", LexicalCategory.VERB), Form.PRESENT_PARTICIPLE));
+        String modified = replaceVerbs("Manifest Destiny refers to a period of violence", false, false, 1);
+        System.out.println(modified);
+// System.out.println(conjugate(lexicon.getWord("sware", LexicalCategory.VERB), Form.PRESENT_PARTICIPLE));
     }
 
     private ArrayList<String> getSynonyms(POS pos, String word) throws JWNLException {
@@ -54,6 +64,61 @@ public class Generator {
             }
         }
         return synonyms;
+    }
+
+    //TODO: when returned synonym contains two words, conjugate the first one.
+    private String replaceVerbs(String org, boolean allowNounAsVerbs, boolean ignoreInfinitive, double ratio) {
+        String words[] = org.split(" ");
+        String output = "";
+        for (String word : words) {
+            if (word.length() == 0) continue;
+            String punctuation = "", lastLetter = word.substring(word.length() - 1);
+            if (lastLetter.matches("[!.,?:;\"']")) {
+                punctuation = lastLetter;
+                word = word.substring(0, word.length() - 1);
+            }
+            if (is(POS.VERB, word) && (allowNounAsVerbs || !is(POS.NOUN, word)) && Math.random() < ratio) {
+                VerbTense verbTense = getVerbTense(word);
+                ArrayList<String> synonyms = null;
+                try {
+                    synonyms = getSynonyms(POS.VERB, word);
+                } catch (JWNLException e) {
+                    e.printStackTrace();
+                }
+                String infinitiveForm = infinitiveFormOf(POS.VERB, word);
+                if (!ignoredVerbs.contains(infinitiveForm) && verbTense != null && synonyms != null && synonyms.size() > 0) {
+                    String selected = synonyms.get((int) (synonyms.size() * Math.random()));
+                    String postfix = "";
+                    if (selected.contains(" ")) {
+                        int idx = selected.indexOf(" ");
+                        postfix = selected.substring(idx);
+                        selected = selected.substring(0, idx);
+                    }
+                    WordElement wordElement = lexicon.getWord(selected, LexicalCategory.VERB);
+                    switch (verbTense) {
+                        case GERUND:
+                            word = conjugate(wordElement, Form.PRESENT_PARTICIPLE);
+                            break;
+                        case PAST_PARTICIPLE:
+                            word = conjugate(wordElement, Form.PAST_PARTICIPLE);
+                            break;
+                        case PAST:
+                            word = conjugate(wordElement, Tense.PAST);
+                            break;
+                        case THIRD_PERSON_SINGULAR:
+                            word = conjugate(wordElement, Tense.PRESENT);
+                            break;
+                        case INFINITIVE:
+                            if (!ignoreInfinitive)
+                                word = selected;
+                            break;
+                    }
+                    word += postfix;
+                }
+            }
+            output += word + punctuation + " ";
+        }
+        return output;
     }
 
     private boolean is(POS pos, String candidate) {
