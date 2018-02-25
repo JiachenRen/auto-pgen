@@ -5,5 +5,7 @@
 public enum VerbTense {
     THIRD_PERSON_SINGULAR,
     PAST,
-    INFINITIVE
+    INFINITIVE,
+    PAST_PARTICIPLE,
+    GERUND
 }

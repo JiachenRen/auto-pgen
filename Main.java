@@ -13,7 +13,6 @@ public class Main {
 //        System.out.println("Simple: \n" + generateSimpleParagraph(items) + "\n");
 
         Generator gen = new Generator(Item.extractItemsFrom(Extractor.search("China")));
-
     }
 
     private static String getTestResponse() {

@@ -2,6 +2,7 @@ import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.*;
 import net.sf.extjwnl.dictionary.Dictionary;
 import simplenlg.features.Feature;
+import simplenlg.features.Form;
 import simplenlg.features.Tense;
 import simplenlg.framework.InflectedWordElement;
 import simplenlg.framework.LexicalCategory;
@@ -29,10 +30,11 @@ public class Generator {
         try {
             this.dict = Dictionary.getDefaultResourceInstance();
             this.getSynonyms(POS.ADJECTIVE, "thoughtful").forEach(System.out::println);
-            System.out.println(getVerbTense("theft"));
+            System.out.println(getVerbTense("stolen"));
         } catch (JWNLException e) {
             e.printStackTrace();
         }
+        System.out.println(conjugate(lexicon.getWord("think", LexicalCategory.VERB), Form.PRESENT_PARTICIPLE));
     }
 
     private ArrayList<String> getSynonyms(POS pos, String word) throws JWNLException {
@@ -54,6 +56,15 @@ public class Generator {
         return synonyms;
     }
 
+    private boolean is(POS pos, String candidate) {
+        try {
+            return dict.lookupIndexWord(pos, candidate) != null;
+        } catch (JWNLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private VerbTense getVerbTense(String verb) {
         try {
             verb = verb.toLowerCase();
@@ -65,6 +76,10 @@ public class Generator {
                 return VerbTense.THIRD_PERSON_SINGULAR;
             } else if (conjugate(word, Tense.PAST).equals(verb)) {
                 return VerbTense.PAST;
+            } else if (conjugate(word, Form.PAST_PARTICIPLE).equals(verb)) {
+                return VerbTense.PAST_PARTICIPLE;
+            } else if (conjugate(word, Form.PRESENT_PARTICIPLE).equals(verb)) {
+                return VerbTense.GERUND;
             }
         } catch (JWNLException e) {
             e.printStackTrace();
@@ -75,6 +90,12 @@ public class Generator {
     private String conjugate(WordElement word, Tense tense) {
         InflectedWordElement inflected = new InflectedWordElement(word);
         inflected.setFeature(Feature.TENSE, tense);
+        return realiser.realise(inflected).getRealisation();
+    }
+
+    private String conjugate(WordElement word, Form form) {
+        InflectedWordElement inflected = new InflectedWordElement(word);
+        inflected.setFeature(Feature.FORM, form);
         return realiser.realise(inflected).getRealisation();
     }
 
