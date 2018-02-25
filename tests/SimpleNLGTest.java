@@ -1,6 +1,10 @@
 package tests;
 
-import simplenlg.framework.NLGFactory;
+import com.sun.org.apache.bcel.internal.classfile.FieldOrMethod;
+import simplenlg.features.Feature;
+import simplenlg.features.Form;
+import simplenlg.features.Tense;
+import simplenlg.framework.*;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.realiser.english.Realiser;
 
@@ -9,9 +13,35 @@ import simplenlg.realiser.english.Realiser;
  * Test the usability of SimpleNLC library.
  */
 public class SimpleNLGTest {
+    private static Lexicon lexicon = Lexicon.getDefaultLexicon();
+    private static NLGFactory nlgFactory = new NLGFactory(lexicon);
+    private static Realiser realiser = new Realiser(lexicon);
+
     public static void main(String args[]) {
-        Lexicon lexicon = Lexicon.getDefaultLexicon();
-        NLGFactory nlgFactory = new NLGFactory(lexicon);
-        Realiser realiser = new Realiser(lexicon);
+        new SimpleNLGTest();
+    }
+
+    private SimpleNLGTest() {
+        testCannedSentence();
+        conjugate("extrapolate", Tense.PAST);
+
+    }
+
+    private void testCannedSentence() {
+        NLGElement s1 = nlgFactory.createSentence("My name is Jiachen Ren");
+        String output = realiser.realiseSentence(s1);
+        System.out.println(output);
+    }
+
+    private void conjugate(String verb, Tense tense) {
+        WordElement word = lexicon.getWord(verb, LexicalCategory.VERB);
+        InflectedWordElement inflected = new InflectedWordElement(word);
+        inflected.setFeature(Feature.TENSE, tense);
+        String past = realiser.realise(inflected).getRealisation();
+        System.out.println(past);
+    }
+
+    private void detectForm(String word) {
+
     }
 }
