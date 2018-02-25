@@ -24,7 +24,7 @@ public class Generator {
     private boolean ignoreInfinitive;
     private boolean swapVerbs;
     private double swapRatio;
-    private boolean debug = false;
+    private boolean debug = true;
     private static Lexicon lexicon = Lexicon.getDefaultLexicon();
     private static NLGFactory nlgFactory = new NLGFactory(lexicon);
     private static Realiser realiser = new Realiser(lexicon);
@@ -34,15 +34,15 @@ public class Generator {
     private static ArrayList<Character> endings;
 
     static {
-        String[] arr = Extractor.read("./resources/ignored_verbs.txt").split("\n");
+        String[] arr = Extractor.readFromResources("/ignored_verbs.txt").split("\n");
         ignoredVerbs = new ArrayList<>();
         Collections.addAll(ignoredVerbs, arr);
 
-        arr = Extractor.read("./resources/ignored_patterns.txt").split("\n");
+        arr = Extractor.readFromResources("/ignored_patterns.txt").split("\n");
         ignoredPatterns = new ArrayList<>();
         Collections.addAll(ignoredPatterns, arr);
 
-        arr = Extractor.read("./resources/abbreviations.txt").split("\n");
+        arr = Extractor.readFromResources("/abbreviations.txt").split("\n");
         abbreviations = new ArrayList<>();
         Collections.addAll(abbreviations, arr);
 

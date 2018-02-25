@@ -1,13 +1,7 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 /**
@@ -15,9 +9,9 @@ import java.net.URLEncoder;
  * Extracts search results from google.
  */
 class Extractor {
-    private static String[] API_KEYS = read("./resources/api_keys.txt").split("\n");
+    private static String[] API_KEYS = readFromResources("/api_keys.txt").split("\n");
     private static String ENCODING = "UTF-8";
-    private static boolean debug = false;
+    private static boolean debug = true;
 
     static String search(String keyword) {
         try {
@@ -47,13 +41,13 @@ class Extractor {
     private static String cache(String keyword) {
         try {
             String encoded = URLEncoder.encode(keyword, ENCODING);
-            File folder = new File("./resources/cache");
+            File folder = new File(pathTo("cache"));
             File[] listOfFiles = folder.listFiles();
             if (listOfFiles == null || listOfFiles.length == 0) return "";
             for (File file : listOfFiles) {
                 if (file.isFile() && file.getName().equals(encoded + ".txt")) {
                     if (debug) System.out.println("retrieving from cache...");
-                    return read(file.getPath());
+                    return read(file.getAbsolutePath());
                 }
             }
 
@@ -63,23 +57,57 @@ class Extractor {
         return "";
     }
 
+    static String pathTo(String folder) {
+        try {
+            String path = Extractor.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            if (path.endsWith(".jar")) path = path.substring(0, path.lastIndexOf("/") + 1);
+            path = URLDecoder.decode(path, "UTF-8") + folder + "/";
+            File file = new File(path);
+            if (!file.exists()) file.mkdirs();
+            return path;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     private static void cache(String keyword, String responseData) {
         try {
+            write("cache", URLEncoder.encode(keyword, ENCODING), responseData);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void write(String folder, String fileName, String content) {
+        try {
             PrintWriter writer;
-            String encoded = URLEncoder.encode(keyword, ENCODING);
-            writer = new PrintWriter("./resources/cache/" + encoded + ".txt", "UTF-8");
-            writer.println(responseData);
+            writer = new PrintWriter(pathTo(folder) + fileName + ".txt", "UTF-8");
+            writer.println(content);
             writer.close();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * read from inside of a .jar file
+     *
+     * @return content of file
+     */
+    static String readFromResources(String filePath) {
+        final String[] acc = {""};
+        InputStream inputStream = Class.class.getResourceAsStream(filePath);
+        InputStreamReader reader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        bufferedReader.lines().forEach(line -> acc[0] += line + "\n");
+        return acc[0];
+    }
+
     static String read(String filePath) {
         String acc = "";
         FileReader fileReader = null;
         try {
-
             fileReader = new FileReader(new File(filePath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();

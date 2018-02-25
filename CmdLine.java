@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,7 +18,7 @@ public class CmdLine {
     private static double swapRatio = 0.6;
     private static Generator gen;
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException, InterruptedException {
         l("Welcome to Auto Paragraph Generator by Jiachen Ren");
         l("Do you wish to customize the paragraph generator? [Y/N]");
         if (bool()) customize();
@@ -39,26 +42,40 @@ public class CmdLine {
         l("Please enter delimiter between topic and generated paragraph: ");
         String outputDelimiter = scan.nextLine();
         l("Working...");
-        String topics[];
+        String topics[], output = "";
         if (!delimiter.equals("")) topics = topicsRaw.split(delimiter);
         else topics = new String[]{topicsRaw};
         for (String topic : topics) {
+            if (topic.endsWith("\n")) topic = topic.substring(0, topic.length() - 1);
             String rawContent = Extractor.search(topic + (postfix.equals(" ") ? "" : postfix));
             ArrayList<Item> items = Item.extractItemsFrom(rawContent);
             int numSentences = (int) (minSentences + Math.random() * (maxSentences - minSentences + 1));
             String paragraph = gen.generateSimpleParagraph(items, numSentences);
             l(topic + outputDelimiter + "\n" + paragraph);
             l("\n");
-
+            output += topic + outputDelimiter + "\n" + paragraph + "\n";
         }
+        l("Writing files...");
+        Extractor.write("output", "generated", output);
+        l("Done.");
+        l("Generated document directory: " + Extractor.pathTo("output").replace(" ", "\\ ") + "generated.txt");
+//        String cmd = "ls " + Extractor.pathTo("output").replace(" ", "\\ ") + "generated.txt";
+//        System.out.println(cmd);
+//        Process process = Runtime.getRuntime().exec(cmd);
+//        process.waitFor();
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            System.out.println(line);
+//        }
     }
 
 
     private static void customize() {
         l("Max number of sentences [1 - 20]: ");
-        maxSentences = num(1, 10);
+        maxSentences = num(1, 20);
         l("Min number of sentences [1 - 20]: ");
-        minSentences = num(1, 10);
+        minSentences = num(1, 20);
         l("Do you wish to swap out some of the verbs? [Y/N]");
         if (bool()) {
             swapVerbs = true;
