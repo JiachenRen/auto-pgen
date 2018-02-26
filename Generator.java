@@ -23,6 +23,7 @@ public class Generator {
     private boolean allowNounAsVerbs;
     private boolean ignoreInfinitive;
     private boolean swapVerbs;
+    private boolean shuffleSentences;
     private double swapRatio;
     private boolean debug = false;
     private static Lexicon lexicon = Lexicon.getDefaultLexicon();
@@ -72,7 +73,7 @@ public class Generator {
         items.forEach(item -> {
             pool.addAll(getSentences(item.getSnippet()));
         });
-        shuffle(pool);
+        if (shuffleSentences) shuffle(pool);
         final String[] paragraph = {""};
         for (int i = 0; i < pool.size(); i++) {
             String sentence = pool.get(i);
@@ -273,5 +274,9 @@ public class Generator {
 
     void setIgnoreInfinitive(boolean b) {
         ignoreInfinitive = b;
+    }
+
+    public void setShuffleSentences(boolean shuffleSentences) {
+        this.shuffleSentences = shuffleSentences;
     }
 }

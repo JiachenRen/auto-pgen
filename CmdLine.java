@@ -18,6 +18,7 @@ public class CmdLine {
     private static boolean swapVerbs = true;
     private static boolean allowNounAsVerbs;
     private static boolean ignoreInfinitive;
+    private static boolean shuffleSentences;
     private static double swapRatio = 0.6;
     private static ColoredPrinter custom = new ColoredPrinter.Builder(1, false)
             .attribute(Ansi.Attribute.BOLD)
@@ -54,6 +55,7 @@ public class CmdLine {
         gen = new Generator(swapVerbs, swapRatio);
         gen.setAllowNounAsVerbs(allowNounAsVerbs);
         gen.setIgnoreInfinitive(ignoreInfinitive);
+        gen.setShuffleSentences(shuffleSentences);
         par.println("Please enter topics (the program will accept any designated delimiters); enter [done] to finish.");
         String topicsRaw = "";
         while (true) {
@@ -88,15 +90,6 @@ public class CmdLine {
         Extractor.write("output", "generated", output);
         success.println("Done.");
         prompt.println("Generated document directory: " + Extractor.pathTo("output").replace(" ", "\\ ") + "generated.txt");
-//        String cmd = "ls " + Extractor.pathTo("output").replace(" ", "\\ ") + "generated.txt";
-//        System.out.println(cmd);
-//        Process process = Runtime.getRuntime().exec(cmd);
-//        process.waitFor();
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            System.out.println(line);
-//        }
     }
 
 
@@ -105,6 +98,8 @@ public class CmdLine {
         maxSentences = num(1, 20);
         custom.println("Min number of sentences [1 - 20]: ");
         minSentences = num(1, 20);
+        custom.println("Do you wish to shuffle the sentences?");
+        shuffleSentences = bool();
         custom.println("Do you wish to swap out some of the verbs? [Y/N]");
         if (bool()) {
             swapVerbs = true;
