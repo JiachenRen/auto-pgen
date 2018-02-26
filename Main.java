@@ -1,3 +1,7 @@
+import java.awt.font.TextAttribute;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {

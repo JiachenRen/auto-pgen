@@ -12,6 +12,7 @@ import simplenlg.lexicon.Lexicon;
 import simplenlg.realiser.english.Realiser;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -24,8 +25,10 @@ public class Generator {
     private boolean ignoreInfinitive;
     private boolean swapVerbs;
     private boolean shuffleSentences;
+    private boolean includeSources = true;
     private double swapRatio;
     private boolean debug = false;
+    private static String SUPER_SCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
     private static Lexicon lexicon = Lexicon.getDefaultLexicon();
     private static NLGFactory nlgFactory = new NLGFactory(lexicon);
     private static Realiser realiser = new Realiser(lexicon);
@@ -68,19 +71,37 @@ public class Generator {
         this.swapRatio = swapRatio;
     }
 
+    private String toSuperscript(int num) {
+        String output = "";
+        for (Character c : Integer.toString(num).toCharArray()) {
+            char coded = SUPER_SCRIPT_DIGITS.charAt(c - 48);
+            output += Character.toString(coded);
+        }
+        return output;
+    }
+
     public String generateSimpleParagraph(ArrayList<Item> items, int numSentences) {
         ArrayList<String> pool = new ArrayList<>();
-        items.forEach(item -> {
-            pool.addAll(getSentences(item.getSnippet()));
-        });
+        for (int i = 0; i < items.size(); i++) {
+            Item item = items.get(i);
+            ArrayList<String> sentences = getSentences(item.getSnippet());
+            final int num = i;
+            if (includeSources) pool.addAll(sentences.stream()
+                    .map(sentence -> sentence.endsWith(" ") ?
+                            sentence.substring(0, sentence.length() - 1) + toSuperscript(num + 1) + " " :
+                            sentence + toSuperscript(num + 1))
+                    .collect(Collectors.toList()));
+            else pool.addAll(sentences);
+        }
         if (shuffleSentences) shuffle(pool);
         final String[] paragraph = {""};
         for (int i = 0; i < pool.size(); i++) {
             String sentence = pool.get(i);
             if (swapVerbs) sentence = replaceVerbs(sentence, swapRatio);
             paragraph[0] += sentence;
-            if (i == numSentences - 1) return paragraph[0];
+            if (i == numSentences - 1) break;
         }
+        for (int i = 0; i < items.size(); i++) paragraph[0] += "\n" + toSuperscript(i + 1) + items.get(i).getLink();
         return paragraph[0];
     }
 
@@ -278,5 +299,9 @@ public class Generator {
 
     public void setShuffleSentences(boolean shuffleSentences) {
         this.shuffleSentences = shuffleSentences;
+    }
+
+    public void setIncludeSources(boolean includeSources) {
+        this.includeSources = includeSources;
     }
 }
