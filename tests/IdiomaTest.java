@@ -14,14 +14,17 @@ import static components.ColoredPrinters.*;
  */
 public class IdiomaTest {
     public static void main(String args[]) {
-        String word = "drew";
+        String word = "key";
 
         test("getPos(String word): ", word);
-        boldGreen.println(Idioma.getPos("drew"));
+        boldGreen.println(Idioma.getPos(word));
+
+        test("lookup(POS pos, String word): ", "verb", word);
+        boldGreen.println(Idioma.lookup(POS.VERB, word));
 
 
         test("isExclusively(POS pos, String word): ", "verb", word);
-        boldGreen.println(Idioma.isExclusively(POS.VERB, "drew"));
+        boldGreen.println(Idioma.isExclusively(POS.VERB, word));
     }
 
     private static void test(String method, String... args) {

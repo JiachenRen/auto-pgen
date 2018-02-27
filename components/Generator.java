@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static components.Idioma.*;
+import static components.ColoredPrinters.*;
 
 
 /**
@@ -20,11 +21,10 @@ import static components.Idioma.*;
  */
 public class Generator {
 
-    private boolean allowNounAsVerbs;
-    private boolean ignoreInfinitive;
+    private boolean crossContextWordSwapping;
     private boolean swapVerbs;
     private boolean shuffleSentences;
-    private boolean includeSources = true;
+    private boolean includeSources;
     private double swapRatio;
     private boolean debug = false;
     private static String SUPER_SCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
@@ -56,9 +56,7 @@ public class Generator {
     }
 
     public Generator(boolean swapVerbs, double swapRatio) {
-
-        this.allowNounAsVerbs = false;
-        this.ignoreInfinitive = false;
+        this.crossContextWordSwapping = false;
         this.swapVerbs = swapVerbs;
         this.swapRatio = swapRatio;
     }
@@ -167,17 +165,23 @@ public class Generator {
                 word = word.substring(0, word.length() - 1);
             }
 
-            if (is(POS.VERB, word) && (allowNounAsVerbs || !is(POS.NOUN, word)) && Math.random() < ratio) {
+            if (((crossContextWordSwapping && is(POS.VERB, word)) || isExclusively(POS.VERB, word)) && Math.random() < ratio) {
                 VerbTense verbTense = getVerbTense(word);
                 ArrayList<String> synonyms = null;
                 try {
-                    synonyms = getSynonyms(POS.VERB, word);
+                    synonyms = getSynonyms(POS.VERB, word, true); //TODO: make exclusivity as an option.
                 } catch (JWNLException e) {
                     e.printStackTrace();
                 }
                 String infinitiveForm = infinitiveFormOf(POS.VERB, word);
                 if (!ignoredVerbs.contains(infinitiveForm) && verbTense != null && synonyms != null && synonyms.size() > 0) {
+                    boldGreen.print("[original] ");
+                    boldBlack.print(word + " ");
+                    boldYellow.print("[tense] ");
+                    boldBlack.print(verbTense + " ");
                     String selected = synonyms.get((int) (synonyms.size() * Math.random()));
+                    boldBlue.print("[synonym] ");
+                    boldBlack.print(selected + " ");
                     String postfix = "";
                     if (selected.contains(" ")) {
                         int idx = selected.indexOf(" ");
@@ -199,11 +203,12 @@ public class Generator {
                             word = conjugate(wordElement, Tense.PRESENT);
                             break;
                         case INFINITIVE:
-                            if (!ignoreInfinitive)
-                                word = selected;
+                            word = selected;
                             break;
                     }
                     word += postfix;
+                    boldGreen.print("[conjugated] ");
+                    boldBlack.println(word + " ");
                     if (debug) word = "<" + word + ">";
                 }
             }
@@ -212,13 +217,8 @@ public class Generator {
         return output;
     }
 
-
-    public void setAllowNounAsVerbs(boolean b) {
-        allowNounAsVerbs = b;
-    }
-
-    public void setIgnoreInfinitive(boolean b) {
-        ignoreInfinitive = b;
+    public void setCrossContextWordSwapping(boolean b) {
+        crossContextWordSwapping = b;
     }
 
     public void setShuffleSentences(boolean shuffleSentences) {

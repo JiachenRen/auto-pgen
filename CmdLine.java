@@ -15,13 +15,13 @@ import static components.ColoredPrinters.*;
  */
 public class CmdLine {
     private static Scanner scan = new Scanner(System.in);
-    private static int minSentences = 2;
+    private static int minSentences = 3;
     private static int maxSentences = 7;
     private static boolean swapVerbs = true;
-    private static boolean allowNounAsVerbs;
-    private static boolean ignoreInfinitive;
+    private static boolean crossContextWordSwapping = false;
     private static boolean shuffleSentences;
-    private static double swapRatio = 0.6;
+    private static boolean citeSources;
+    private static double swapRatio = 0.7;
     private static Generator gen;
 
     public static void main(String args[]) throws IOException, InterruptedException {
@@ -31,9 +31,9 @@ public class CmdLine {
         if (bool()) customize();
         boldGreen.println("Initializing automatic paragraph generator...");
         gen = new Generator(swapVerbs, swapRatio);
-        gen.setAllowNounAsVerbs(allowNounAsVerbs);
-        gen.setIgnoreInfinitive(ignoreInfinitive);
+        gen.setCrossContextWordSwapping(crossContextWordSwapping);
         gen.setShuffleSentences(shuffleSentences);
+        gen.setIncludeSources(citeSources);
         cyan.println("Please enter topics (the program will accept any designated delimiters); enter [done] to finish.");
         String topicsRaw = "";
         while (true) {
@@ -66,26 +66,27 @@ public class CmdLine {
         }
         boldGreen.println("Writing files...");
         Extractor.write("output", "generated", output);
-        magenta.println("Done.");
-        boldGreen.println("Generated document directory: " + Extractor.pathTo("output").replace(" ", "\\ ") + "generated.txt");
+        boldGreen.println("Done.");
+        boldRed.println("Generated document directory: " + Extractor.pathTo("output").replace(" ", "\\ ") + "generated.txt");
     }
 
 
     private static void customize() {
-        boldBlack.println("Max number of sentences [1 - 20]: ");
+        boldBlack.println("Max # Sentences [1 - 20]: ");
         maxSentences = num(1, 20);
-        boldBlack.println("Min number of sentences [1 - 20]: ");
+        boldBlack.println("Min # Sentences [1 - 20]: ");
         minSentences = num(1, 20);
-        boldBlack.println("Do you wish to shuffle the sentences?");
+        boldBlack.println("Sentence Shuffling [Y/N]");
         shuffleSentences = bool();
-        boldBlack.println("Do you wish to swap out some of the verbs? [Y/N]");
+        boldBlack.println("Cite Sources [Y/N]");
+        citeSources = bool();
+        boldBlack.println("Verb Swapping [Y/N]");
+        swapVerbs = bool();
+        cyan.println("Continue to customize advanced features? [Y/N]");
         if (bool()) {
-            swapVerbs = true;
-            boldBlack.println("Do you wish to allow the generator to swap out verbs that are potentially nouns? [Y/N]");
-            allowNounAsVerbs = bool();
-            boldBlack.println("Do you wish to ignore all verbs in infinitive form when swapping? [Y/N]");
-            ignoreInfinitive = bool();
-            boldBlack.println("Ratio of verbs to be swapped out [0.0 - 1.0]: ");
+            boldYellow.println("Do you wish to enable cross context word swapping(e.g. swap verbs with relevant nouns)? [Y/N]");
+            crossContextWordSwapping = bool();
+            boldYellow.println("Ratio of verbs to be swapped out [0.0 - 1.0]: ");
             swapRatio = decimal(0, 1);
         }
     }

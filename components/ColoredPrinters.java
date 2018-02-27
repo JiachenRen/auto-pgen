@@ -30,6 +30,10 @@ public class ColoredPrinters {
             .foreground(Ansi.FColor.RED)
             .attribute(Ansi.Attribute.BOLD)
             .build();
+    public static ColoredPrinter boldBlue = new ColoredPrinter.Builder(1, false)
+            .foreground(Ansi.FColor.BLUE)
+            .attribute(Ansi.Attribute.BOLD)
+            .build();
     public static ColoredPrinter normal = new ColoredPrinter.Builder(1, false)
             .build();
 }

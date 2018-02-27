@@ -10,6 +10,7 @@ public class Main {
         String raw = getTestResponse();
         Generator gen = new Generator();
         gen.setIncludeSources(false);
+        gen.setDebug(true);
         String paragraph = gen.generateSimpleParagraph(Item.extractItemsFrom(raw), 20);
         boldRed.println(paragraph);
     }

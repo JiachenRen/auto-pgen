@@ -17,6 +17,8 @@ import simplenlg.realiser.english.Realiser;
 
 import java.util.ArrayList;
 
+import static components.ColoredPrinters.*;
+
 /**
  * Created by Jiachen on 2/26/18.
  * Manages SimpleNLG, CoreNLP, and WordNet functions
@@ -111,7 +113,24 @@ public class Idioma {
         return poses;
     }
 
-    static ArrayList<String> getSynonyms(POS pos, String word) throws JWNLException {
+    public static String lookup(POS pos, String word) {
+        try {
+            return dict.lookupIndexWord(pos, word).getLemma();
+        } catch (JWNLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     *
+     * @param pos part of speech of the word
+     * @param word word in which a synonym is going to be derived from
+     * @param exclusive whether or not to return synonyms that have exclusively the designated part of speech
+     * @return an ArrayList containing synonyms
+     * @throws JWNLException some unknown WordNet internal error
+     */
+    static ArrayList<String> getSynonyms(POS pos, String word, boolean exclusive) throws JWNLException {
         ArrayList<String> synonyms = new ArrayList<>();
         IndexWord indexWord = dict.lookupIndexWord(pos, word);
         if (indexWord == null) return synonyms;
@@ -120,7 +139,7 @@ public class Idioma {
             Synset set = dict.getSynsetAt(pos, i);
             for (Word word1 : set.getWords()) {
                 String lemma = word1.getLemma();
-                if (lemma.equals(inf))
+                if (lemma.equals(inf) || (exclusive && !isExclusively(pos, lemma)))
                     continue;
                 if (!synonyms.contains(lemma) && !lemma.contains(inf)) {
                     synonyms.add(lemma);
