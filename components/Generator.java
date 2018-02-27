@@ -2,19 +2,15 @@ package components;
 
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.*;
-import net.sf.extjwnl.dictionary.Dictionary;
-import simplenlg.features.Feature;
+
 import simplenlg.features.Form;
 import simplenlg.features.Tense;
-import simplenlg.framework.InflectedWordElement;
 import simplenlg.framework.LexicalCategory;
-import simplenlg.framework.NLGFactory;
 import simplenlg.framework.WordElement;
-import simplenlg.lexicon.Lexicon;
-import simplenlg.realiser.english.Realiser;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import static components.Idioma.*;
 
 
 /**
@@ -22,7 +18,7 @@ import java.util.stream.Collectors;
  * Generate a paragraph from the resources collected over the internet.
  */
 public class Generator {
-    private Dictionary dict;
+
     private boolean allowNounAsVerbs;
     private boolean ignoreInfinitive;
     private boolean swapVerbs;
@@ -31,9 +27,6 @@ public class Generator {
     private double swapRatio;
     private boolean debug = false;
     private static String SUPER_SCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
-    private static Lexicon lexicon = Lexicon.getDefaultLexicon();
-    private static NLGFactory nlgFactory = new NLGFactory(lexicon);
-    private static Realiser realiser = new Realiser(lexicon);
     private static ArrayList<String> ignoredVerbs;
     private static ArrayList<String> ignoredPatterns;
     private static ArrayList<String> abbreviations;
@@ -62,11 +55,7 @@ public class Generator {
     }
 
     public Generator(boolean swapVerbs, double swapRatio) {
-        try {
-            this.dict = Dictionary.getDefaultResourceInstance();
-        } catch (JWNLException e) {
-            e.printStackTrace();
-        }
+
         this.allowNounAsVerbs = false;
         this.ignoreInfinitive = false;
         this.swapVerbs = swapVerbs;
@@ -165,25 +154,6 @@ public class Generator {
         return true;
     }
 
-    private ArrayList<String> getSynonyms(POS pos, String word) throws JWNLException {
-        ArrayList<String> synonyms = new ArrayList<>();
-        IndexWord indexWord = dict.lookupIndexWord(pos, word);
-        if (indexWord == null) return synonyms;
-        String inf = this.infinitiveFormOf(pos, word);
-        for (long i : indexWord.getSynsetOffsets()) {
-            Synset set = dict.getSynsetAt(pos, i);
-            for (Word word1 : set.getWords()) {
-                String lemma = word1.getLemma();
-                if (lemma.equals(inf))
-                    continue;
-                if (!synonyms.contains(lemma) && !lemma.contains(inf)) {
-                    synonyms.add(lemma);
-                }
-            }
-        }
-        return synonyms;
-    }
-
 
     private String replaceVerbs(String org, double ratio) {
         String words[] = org.split(" ");
@@ -241,60 +211,6 @@ public class Generator {
         return output;
     }
 
-    private boolean is(POS pos, String candidate) {
-        try {
-            return dict.lookupIndexWord(pos, candidate) != null;
-        } catch (JWNLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private VerbTense getVerbTense(String verb) {
-        try {
-            verb = verb.toLowerCase();
-            IndexWord indexWord = dict.lookupIndexWord(POS.VERB, verb);
-            if (indexWord == null) return null;
-            if (indexWord.getLemma().equals(verb)) return VerbTense.INFINITIVE;
-            WordElement word = lexicon.getWord(indexWord.getLemma(), LexicalCategory.VERB);
-            if (this.conjugate(word, Tense.PRESENT).equals(verb)) {
-                return VerbTense.THIRD_PERSON_SINGULAR;
-            } else if (conjugate(word, Tense.PAST).equals(verb)) {
-                return VerbTense.PAST;
-            } else if (conjugate(word, Form.PAST_PARTICIPLE).equals(verb)) {
-                return VerbTense.PAST_PARTICIPLE;
-            } else if (conjugate(word, Form.PRESENT_PARTICIPLE).equals(verb)) {
-                return VerbTense.GERUND;
-            }
-        } catch (JWNLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private String conjugate(WordElement word, Tense tense) {
-        InflectedWordElement inflected = new InflectedWordElement(word);
-        inflected.setFeature(Feature.TENSE, tense);
-        return realiser.realise(inflected).getRealisation();
-    }
-
-    private String conjugate(WordElement word, Form form) {
-        InflectedWordElement inflected = new InflectedWordElement(word);
-        inflected.setFeature(Feature.FORM, form);
-        return realiser.realise(inflected).getRealisation();
-    }
-
-    private String infinitiveFormOf(POS pos, String word) {
-        try {
-            IndexWord inf = dict.lookupIndexWord(pos, word);
-            if (inf != null) {
-                return inf.getLemma();
-            }
-        } catch (JWNLException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
 
     public void setAllowNounAsVerbs(boolean b) {
         allowNounAsVerbs = b;
