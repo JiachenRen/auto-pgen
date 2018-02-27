@@ -11,7 +11,6 @@ import simplenlg.features.Form;
 import simplenlg.features.Tense;
 import simplenlg.framework.InflectedWordElement;
 import simplenlg.framework.LexicalCategory;
-import simplenlg.framework.NLGFactory;
 import simplenlg.framework.WordElement;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.realiser.english.Realiser;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
  */
 public class Idioma {
     static Lexicon lexicon = Lexicon.getDefaultLexicon();
-    private static NLGFactory nlgFactory = new NLGFactory(lexicon);
+    //    private static NLGFactory nlgFactory = new NLGFactory(lexicon);
     private static Realiser realiser = new Realiser(lexicon);
     private static Dictionary dict;
 
@@ -37,19 +36,19 @@ public class Idioma {
     }
 
 
-    public static String conjugate(WordElement word, Tense tense) {
+    static String conjugate(WordElement word, Tense tense) {
         InflectedWordElement inflected = new InflectedWordElement(word);
         inflected.setFeature(Feature.TENSE, tense);
         return realiser.realise(inflected).getRealisation();
     }
 
-    public static String conjugate(WordElement word, Form form) {
+    static String conjugate(WordElement word, Form form) {
         InflectedWordElement inflected = new InflectedWordElement(word);
         inflected.setFeature(Feature.FORM, form);
         return realiser.realise(inflected).getRealisation();
     }
 
-    public static String infinitiveFormOf(POS pos, String word) {
+    static String infinitiveFormOf(POS pos, String word) {
         try {
             IndexWord inf = dict.lookupIndexWord(pos, word);
             if (inf != null) {
@@ -61,7 +60,7 @@ public class Idioma {
         return "";
     }
 
-    public static VerbTense getVerbTense(String verb) {
+    static VerbTense getVerbTense(String verb) {
         try {
             verb = verb.toLowerCase();
             IndexWord indexWord = dict.lookupIndexWord(POS.VERB, verb);
@@ -92,7 +91,27 @@ public class Idioma {
         return false;
     }
 
-    public static ArrayList<String> getSynonyms(POS pos, String word) throws JWNLException {
+    public static boolean isExclusively(POS pos, String candidate) {
+        if (!is(pos, candidate)) return false;
+        for (POS pos1 : POS.getAllPOS()) {
+            if (!pos.equals(pos1) && is(pos1, candidate)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param word the word to be looked up
+     * @return an ArrayList containing parts of speech of the given word.
+     */
+    public static ArrayList<POS> getPos(String word) {
+        ArrayList<POS> poses = new ArrayList<>();
+        POS.getAllPOS().forEach(pos -> {
+            if (is(pos, word)) poses.add(pos);
+        });
+        return poses;
+    }
+
+    static ArrayList<String> getSynonyms(POS pos, String word) throws JWNLException {
         ArrayList<String> synonyms = new ArrayList<>();
         IndexWord indexWord = dict.lookupIndexWord(pos, word);
         if (indexWord == null) return synonyms;

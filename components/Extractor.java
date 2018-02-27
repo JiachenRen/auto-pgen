@@ -107,7 +107,7 @@ public class Extractor {
         return acc[0];
     }
 
-    static String read(String filePath) {
+    private static String read(String filePath) {
         String acc = "";
         FileReader fileReader = null;
         try {

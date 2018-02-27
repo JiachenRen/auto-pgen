@@ -10,6 +10,7 @@ import simplenlg.framework.WordElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 import static components.Idioma.*;
 
 
@@ -226,5 +227,9 @@ public class Generator {
 
     public void setIncludeSources(boolean includeSources) {
         this.includeSources = includeSources;
+    }
+
+    public void setDebug(boolean b) {
+        debug = b;
     }
 }
