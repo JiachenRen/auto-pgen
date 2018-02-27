@@ -1,9 +1,10 @@
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
+import components.Extractor;
+import components.Generator;
+import components.Item;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -48,7 +49,7 @@ public class CmdLine {
 
     public static void main(String args[]) throws IOException, InterruptedException {
         clr.clear();
-        prompt.println("Welcome to Auto Paragraph Generator by Jiachen Ren");
+        prompt.println("Welcome to Auto Paragraph components.Generator by Jiachen Ren");
         par.println("Do you wish to customize the paragraph generator? [Y/N]");
         if (bool()) customize();
         prompt.println("Initializing automatic paragraph generator...");

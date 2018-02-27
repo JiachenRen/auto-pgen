@@ -1,3 +1,5 @@
+package components;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -8,12 +10,12 @@ import java.net.URLEncoder;
  * Created by Jiachen on 2/23/18.
  * Extracts search results from google.
  */
-class Extractor {
+public class Extractor {
     private static String[] API_KEYS = readFromResources("/api_keys.txt").split("\n");
     private static String ENCODING = "UTF-8";
     private static boolean debug = true;
 
-    static String search(String keyword) {
+    public static String search(String keyword) {
         try {
             String cached = cache(keyword);
             if (!cached.equals("")) return cached;
@@ -57,7 +59,8 @@ class Extractor {
         return "";
     }
 
-    static String pathTo(String folder) {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static String pathTo(String folder) {
         try {
             String path = Extractor.class.getProtectionDomain().getCodeSource().getLocation().getPath();
             if (path.endsWith(".jar")) path = path.substring(0, path.lastIndexOf("/") + 1);
@@ -79,7 +82,7 @@ class Extractor {
         }
     }
 
-    static void write(String folder, String fileName, String content) {
+    public static void write(String folder, String fileName, String content) {
         try {
             PrintWriter writer;
             writer = new PrintWriter(pathTo(folder) + fileName + ".txt", "UTF-8");
@@ -95,7 +98,7 @@ class Extractor {
      *
      * @return content of file
      */
-    static String readFromResources(String filePath) {
+    public static String readFromResources(String filePath) {
         final String[] acc = {""};
         InputStream inputStream = Class.class.getResourceAsStream(filePath);
         InputStreamReader reader = new InputStreamReader(inputStream);

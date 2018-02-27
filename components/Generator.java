@@ -1,3 +1,5 @@
+package components;
+
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.*;
 import net.sf.extjwnl.dictionary.Dictionary;
@@ -59,7 +61,7 @@ public class Generator {
         this(true, 0.5);
     }
 
-    Generator(boolean swapVerbs, double swapRatio) {
+    public Generator(boolean swapVerbs, double swapRatio) {
         try {
             this.dict = Dictionary.getDefaultResourceInstance();
         } catch (JWNLException e) {
@@ -289,11 +291,11 @@ public class Generator {
         return "";
     }
 
-    void setAllowNounAsVerbs(boolean b) {
+    public void setAllowNounAsVerbs(boolean b) {
         allowNounAsVerbs = b;
     }
 
-    void setIgnoreInfinitive(boolean b) {
+    public void setIgnoreInfinitive(boolean b) {
         ignoreInfinitive = b;
     }
 
