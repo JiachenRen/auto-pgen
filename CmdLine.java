@@ -1,5 +1,3 @@
-import com.diogonunes.jcdp.color.ColoredPrinter;
-import com.diogonunes.jcdp.color.api.Ansi;
 import components.Extractor;
 import components.Generator;
 import components.Item;
@@ -8,9 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static components.ColoredPrinters.*;
+
+
 /**
  * Created by Jiachen on 2/25/18.
- * Commandline util for doing homework.
+ * Commandline Application: Automatic Paragraph Generator.
  */
 public class CmdLine {
     private static Scanner scan = new Scanner(System.in);
@@ -21,43 +22,19 @@ public class CmdLine {
     private static boolean ignoreInfinitive;
     private static boolean shuffleSentences;
     private static double swapRatio = 0.6;
-    private static ColoredPrinter custom = new ColoredPrinter.Builder(1, false)
-            .attribute(Ansi.Attribute.BOLD)
-            .foreground(Ansi.FColor.BLACK)
-            .build();
-    private static ColoredPrinter prompt = new ColoredPrinter.Builder(1, false)
-            .foreground(Ansi.FColor.GREEN)
-            .attribute(Ansi.Attribute.BOLD)
-            .build();
-    private static ColoredPrinter par = new ColoredPrinter.Builder(1, false)
-            .foreground(Ansi.FColor.CYAN)
-            .build();
-    private static ColoredPrinter success = new ColoredPrinter.Builder(1, false)
-            .foreground(Ansi.FColor.MAGENTA)
-            .build();
-    private static ColoredPrinter progress = new ColoredPrinter.Builder(1, false)
-            .foreground(Ansi.FColor.YELLOW)
-            .attribute(Ansi.Attribute.BOLD)
-            .build();
-    private static ColoredPrinter err = new ColoredPrinter.Builder(1, false)
-            .foreground(Ansi.FColor.RED)
-            .attribute(Ansi.Attribute.BOLD)
-            .build();
-    private static ColoredPrinter clr = new ColoredPrinter.Builder(1, false)
-            .build();
     private static Generator gen;
 
     public static void main(String args[]) throws IOException, InterruptedException {
-        clr.clear();
-        prompt.println("Welcome to Auto Paragraph components.Generator by Jiachen Ren");
-        par.println("Do you wish to customize the paragraph generator? [Y/N]");
+        normal.clear();
+        boldGreen.println("Welcome to Auto Paragraph components.Generator by Jiachen Ren");
+        cyan.println("Do you wish to customize the paragraph generator? [Y/N]");
         if (bool()) customize();
-        prompt.println("Initializing automatic paragraph generator...");
+        boldGreen.println("Initializing automatic paragraph generator...");
         gen = new Generator(swapVerbs, swapRatio);
         gen.setAllowNounAsVerbs(allowNounAsVerbs);
         gen.setIgnoreInfinitive(ignoreInfinitive);
         gen.setShuffleSentences(shuffleSentences);
-        par.println("Please enter topics (the program will accept any designated delimiters); enter [done] to finish.");
+        cyan.println("Please enter topics (the program will accept any designated delimiters); enter [done] to finish.");
         String topicsRaw = "";
         while (true) {
             String line = scan.nextLine();
@@ -66,13 +43,13 @@ public class CmdLine {
             }
             topicsRaw += line + "\n";
         }
-        par.println("Subject area of concern (Simply press [ENTER] if you wish to do a generic search)? [US History/English... ect.]");
+        cyan.println("Subject area of concern (Simply press [ENTER] if you wish to do a generic search)? [US History/English... ect.]");
         String postfix = " " + scan.nextLine();
-        par.println("Please enter delimiter: ");
+        cyan.println("Please enter delimiter: ");
         String delimiter = scan.nextLine();
-        par.println("Please enter delimiter between topic and generated paragraph: ");
+        cyan.println("Please enter delimiter between topic and generated paragraph: ");
         String outputDelimiter = scan.nextLine();
-        prompt.println("Working...");
+        boldGreen.println("Working...");
         String topics[], output = "";
         if (!delimiter.equals("")) topics = topicsRaw.split(delimiter);
         else topics = new String[]{topicsRaw};
@@ -82,39 +59,39 @@ public class CmdLine {
             ArrayList<Item> items = Item.extractItemsFrom(rawContent);
             int numSentences = (int) (minSentences + Math.random() * (maxSentences - minSentences + 1));
             String paragraph = gen.generateSimpleParagraph(items, numSentences);
-            progress.println(topic + outputDelimiter + "\n");
-            success.println(paragraph);
+            boldYellow.println(topic + outputDelimiter);
+            magenta.println(paragraph);
             l("\n");
             output += topic + outputDelimiter + "\n" + paragraph + "\n";
         }
-        prompt.println("Writing files...");
+        boldGreen.println("Writing files...");
         Extractor.write("output", "generated", output);
-        success.println("Done.");
-        prompt.println("Generated document directory: " + Extractor.pathTo("output").replace(" ", "\\ ") + "generated.txt");
+        magenta.println("Done.");
+        boldGreen.println("Generated document directory: " + Extractor.pathTo("output").replace(" ", "\\ ") + "generated.txt");
     }
 
 
     private static void customize() {
-        custom.println("Max number of sentences [1 - 20]: ");
+        boldBlack.println("Max number of sentences [1 - 20]: ");
         maxSentences = num(1, 20);
-        custom.println("Min number of sentences [1 - 20]: ");
+        boldBlack.println("Min number of sentences [1 - 20]: ");
         minSentences = num(1, 20);
-        custom.println("Do you wish to shuffle the sentences?");
+        boldBlack.println("Do you wish to shuffle the sentences?");
         shuffleSentences = bool();
-        custom.println("Do you wish to swap out some of the verbs? [Y/N]");
+        boldBlack.println("Do you wish to swap out some of the verbs? [Y/N]");
         if (bool()) {
             swapVerbs = true;
-            custom.println("Do you wish to allow the generator to swap out verbs that are potentially nouns? [Y/N]");
+            boldBlack.println("Do you wish to allow the generator to swap out verbs that are potentially nouns? [Y/N]");
             allowNounAsVerbs = bool();
-            custom.println("Do you wish to ignore all verbs in infinitive form when swapping? [Y/N]");
+            boldBlack.println("Do you wish to ignore all verbs in infinitive form when swapping? [Y/N]");
             ignoreInfinitive = bool();
-            custom.println("Ratio of verbs to be swapped out [0.0 - 1.0]: ");
+            boldBlack.println("Ratio of verbs to be swapped out [0.0 - 1.0]: ");
             swapRatio = decimal(0, 1);
         }
     }
 
     private static boolean bool() {
-        clr.print("");
+        normal.print("");
         while (true) {
             String response = scan.nextLine().toLowerCase();
             switch (response) {
@@ -127,7 +104,7 @@ public class CmdLine {
                 case "no":
                     return false;
             }
-            err.println("Please enter \"y\" for yes, \"no\" for no.");
+            boldRed.println("Please enter \"y\" for yes, \"no\" for no.");
         }
     }
 
@@ -136,29 +113,29 @@ public class CmdLine {
     }
 
     private static int num(int min, int max) {
-        clr.print("");
+        normal.print("");
         while (true) {
             String response = scan.nextLine().toLowerCase();
             try {
                 int num = Integer.valueOf(response);
                 if (num <= max && num >= min) return num;
-                else err.println("Please enter a number between " + min + " and " + max);
+                else boldRed.println("Please enter a number between " + min + " and " + max);
             } catch (NumberFormatException e) {
-                err.println("Please enter a valid number.");
+                boldRed.println("Please enter a valid number.");
             }
         }
     }
 
     private static double decimal(double min, double max) {
-        clr.print("");
+        normal.print("");
         while (true) {
             String response = scan.nextLine().toLowerCase();
             try {
                 double num = Double.valueOf(response);
                 if (num <= max && num >= min) return num;
-                else err.println("Please enter a decimal number between " + min + " and " + max);
+                else boldRed.println("Please enter a decimal number between " + min + " and " + max);
             } catch (NumberFormatException e) {
-                err.println("Please enter a valid decimal number.");
+                boldRed.println("Please enter a valid decimal number.");
             }
         }
     }

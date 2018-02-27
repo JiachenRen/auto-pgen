@@ -57,8 +57,8 @@ public class Generator {
         Collections.addAll(endings, '.', '!', '?');
     }
 
-    Generator() {
-        this(true, 0.5);
+    public Generator() {
+        this(true, 1);
     }
 
     public Generator(boolean swapVerbs, double swapRatio) {
@@ -103,7 +103,11 @@ public class Generator {
             paragraph[0] += sentence;
             if (i == numSentences - 1) break;
         }
-        for (int i = 0; i < items.size(); i++) paragraph[0] += "\n" + toSuperscript(i + 1) + items.get(i).getLink();
+        if (includeSources) {
+            for (int i = 0; i < items.size(); i++) {
+                paragraph[0] += "\n" + toSuperscript(i + 1) + items.get(i).getLink();
+            }
+        }
         return paragraph[0];
     }
 
@@ -191,6 +195,7 @@ public class Generator {
                 punctuation = lastLetter;
                 word = word.substring(0, word.length() - 1);
             }
+
             if (is(POS.VERB, word) && (allowNounAsVerbs || !is(POS.NOUN, word)) && Math.random() < ratio) {
                 VerbTense verbTense = getVerbTense(word);
                 ArrayList<String> synonyms = null;

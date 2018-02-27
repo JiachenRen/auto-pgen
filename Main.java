@@ -1,20 +1,17 @@
 import components.Extractor;
+import components.Generator;
+import components.Item;
 
-import java.awt.font.TextAttribute;
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
+import static components.ColoredPrinters.*;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
-//        ArrayList<components.Item> items = components.Item.extractItemsFrom(components.Extractor.search("China"));
-//        System.out.println("Detailed: \n" + generateParagraph(items) + "\n");
-//        System.out.println("Simple: \n" + generateSimpleParagraph(items) + "\n");
-
-//        components.Generator gen = new components.Generator();
-//        System.out.println(gen.generateSimpleParagraph(components.Item.extractItemsFrom(components.Extractor.search("urbanization")), 5));
-//        System.out.println(components.Extractor.);
-        getTestResponse();
+        String raw = getTestResponse();
+        Generator gen = new Generator();
+        gen.setIncludeSources(false);
+        String paragraph = gen.generateSimpleParagraph(Item.extractItemsFrom(raw), 20);
+        boldRed.println(paragraph);
     }
 
     private static String getTestResponse() {

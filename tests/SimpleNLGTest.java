@@ -24,7 +24,7 @@ public class SimpleNLGTest {
     private SimpleNLGTest() {
         testCannedSentence();
         conjugate("extrapolate", Tense.PAST);
-
+        toPlural("thesis");
     }
 
     private void testCannedSentence() {
@@ -41,7 +41,10 @@ public class SimpleNLGTest {
         System.out.println(past);
     }
 
-    private void detectForm(String word) {
-
+    private void toPlural(String word) {
+        WordElement noun = lexicon.getWord(word, LexicalCategory.NOUN);
+        InflectedWordElement inflected = new InflectedWordElement(noun);
+        inflected.setPlural(true);
+        System.out.println(realiser.realise(inflected).getRealisation());
     }
 }
