@@ -1,4 +1,4 @@
-# Auto-Paragraph-components.Generator #
+# Auto-Paragraph-Generator #
 A program that helps you complete your english/history homework.
 
 #### Batch processing of term/definition pairs ####
