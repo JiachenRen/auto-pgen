@@ -2,6 +2,8 @@ package components;
 
 import java.util.ArrayList;
 
+import static components.ColoredPrinters.*;
+
 /**
  * Created by Jiachen on 2/23/18.
  * Interpret raw results returned from search engine into appropriate java properties.
@@ -24,6 +26,7 @@ public class Item {
     }
 
     private static ArrayList<String> extractRawItems(String input) {
+        boldGreen.println("Extracting content from raw JSON string...");
         ArrayList<String> rawItems = new ArrayList<>();
         String keyword = "\"items\": ";
         int idx = input.indexOf("\"items\": ") + keyword.length();
@@ -48,6 +51,7 @@ public class Item {
     }
 
     private static ArrayList<Item> interpret(ArrayList<String> rawItems) {
+        boldGreen.println("Constructing items...");
         ArrayList<Item> items = new ArrayList<>();
         rawItems.forEach(rawItem -> {
             String[] lines = rawItem.split("\n");
@@ -55,10 +59,16 @@ public class Item {
             for (String line : lines) {
                 if (line.contains("title")) {
                     title = extractContent(line);
+                    boldGreen.print("[title] ");
+                    boldBlack.println(title);
                 } else if (line.contains("link")) {
                     link = extractContent(line);
+                    boldGreen.print("[link] ");
+                    boldBlack.println(link);
                 } else if (line.contains("snippet")) {
                     snippet = extractContent(line).replace("\\n", "").replace("\\\"", "\"");
+                    boldGreen.print("[snippet] ");
+                    boldBlack.println(snippet);
                 } else if (line.contains("displayLink")) {
                     displayLink = extractContent(line);
                 }

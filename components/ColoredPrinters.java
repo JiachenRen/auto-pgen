@@ -16,6 +16,10 @@ public class ColoredPrinters {
             .foreground(Ansi.FColor.GREEN)
             .attribute(Ansi.Attribute.BOLD)
             .build();
+    public static ColoredPrinter boldCyan = new ColoredPrinter.Builder(1, false)
+            .foreground(Ansi.FColor.CYAN)
+            .attribute(Ansi.Attribute.BOLD)
+            .build();
     public static ColoredPrinter cyan = new ColoredPrinter.Builder(1, false)
             .foreground(Ansi.FColor.CYAN)
             .build();

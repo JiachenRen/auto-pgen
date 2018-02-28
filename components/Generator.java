@@ -76,12 +76,14 @@ public class Generator {
             Item item = items.get(i);
             ArrayList<String> sentences = getSentences(item.getSnippet());
             final int num = i;
-            if (includeSources) pool.addAll(sentences.stream()
-                    .map(sentence -> sentence.endsWith(" ") ?
-                            sentence.substring(0, sentence.length() - 1) + toSuperscript(num + 1) + " " :
-                            sentence + toSuperscript(num + 1))
-                    .collect(Collectors.toList()));
-            else pool.addAll(sentences);
+            if (includeSources) {
+                boldGreen.println("Generating sources...");
+                pool.addAll(sentences.stream()
+                        .map(sentence -> sentence.endsWith(" ") ?
+                                sentence.substring(0, sentence.length() - 1) + toSuperscript(num + 1) + " " :
+                                sentence + toSuperscript(num + 1))
+                        .collect(Collectors.toList()));
+            } else pool.addAll(sentences);
         }
         if (shuffleSentences) shuffle(pool);
         final String[] paragraph = {""};
@@ -101,6 +103,7 @@ public class Generator {
 
     private void shuffle(ArrayList<String> arrList) {
         ArrayList<String> shuffled = new ArrayList<>();
+        boldGreen.println("Shuffling sentences...");
         while (arrList.size() > 0) {
             int idx = (int) (Math.random() * arrList.size());
             shuffled.add(arrList.remove(idx));
@@ -110,6 +113,7 @@ public class Generator {
 
     private ArrayList<String> getSentences(String paragraph) {
         ArrayList<String> sentences = new ArrayList<>();
+        boldGreen.println("Extracting sentences from sources...");
         String sentence = "";
         char[] charArray = paragraph.toCharArray();
         for (int i = 0; i < charArray.length; i++) {
@@ -128,6 +132,10 @@ public class Generator {
                     sentence += c + "" + next;
                     if (isValidSentence(sentence))
                         sentences.add(sentence);
+                    else {
+                        boldRed.print("[filtered] ");
+                        boldBlack.println(sentence);
+                    }
                     sentence = "";
                     i += 1;
                     continue;

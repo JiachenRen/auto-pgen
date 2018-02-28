@@ -26,7 +26,7 @@ public class CmdLine {
 
     public static void main(String args[]) throws IOException, InterruptedException {
         normal.clear();
-        boldGreen.println("Welcome to Auto Paragraph components.Generator by Jiachen Ren");
+        boldGreen.println("Welcome to Auto Paragraph Generator by Jiachen Ren");
         cyan.println("Do you wish to customize the paragraph generator? [Y/N]");
         if (bool()) customize();
         boldGreen.println("Initializing automatic paragraph generator...");

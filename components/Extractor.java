@@ -6,6 +6,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import static components.ColoredPrinters.*;
+
 /**
  * Created by Jiachen on 2/23/18.
  * Extracts search results from google.
@@ -27,7 +29,7 @@ public class Extractor {
             BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
             String output, acc = "";
-            if (debug) System.out.println("Response successfully retrieved from net...");
+            if (debug) boldBlue.println("Response successfully retrieved from net...");
             while ((output = br.readLine()) != null) {
                 acc += output + "\n";
             }
@@ -42,13 +44,13 @@ public class Extractor {
 
     private static String cache(String keyword) {
         try {
-            String encoded = URLEncoder.encode(keyword, ENCODING);
+            String encoded = URLEncoder.encode(keyword, ENCODING).toLowerCase();
             File folder = new File(pathTo("cache"));
             File[] listOfFiles = folder.listFiles();
             if (listOfFiles == null || listOfFiles.length == 0) return "";
             for (File file : listOfFiles) {
-                if (file.isFile() && file.getName().equals(encoded + ".txt")) {
-                    if (debug) System.out.println("retrieving from cache...");
+                if (file.isFile() && file.getName().toLowerCase().equals(encoded + ".txt")) {
+                    if (debug) boldCyan.println("retrieving from cache...");
                     return read(file.getAbsolutePath());
                 }
             }
@@ -76,7 +78,9 @@ public class Extractor {
 
     private static void cache(String keyword, String responseData) {
         try {
-            write("cache", URLEncoder.encode(keyword, ENCODING), responseData);
+            String fileName = URLEncoder.encode(keyword, ENCODING).toLowerCase();
+            write("cache", fileName, responseData);
+            boldCyan.println("cached -> " + fileName);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -85,7 +89,9 @@ public class Extractor {
     public static void write(String folder, String fileName, String content) {
         try {
             PrintWriter writer;
-            writer = new PrintWriter(pathTo(folder) + fileName + ".txt", "UTF-8");
+            String file = pathTo(folder) + fileName + ".txt";
+            boldGreen.println("Writing file: " + file);
+            writer = new PrintWriter(file, "UTF-8");
             writer.println(content);
             writer.close();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
@@ -108,6 +114,7 @@ public class Extractor {
     }
 
     private static String read(String filePath) {
+        boldCyan.println("Reading file: " + filePath);
         String acc = "";
         FileReader fileReader = null;
         try {
