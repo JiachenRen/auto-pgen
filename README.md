@@ -1,6 +1,14 @@
 # Auto-Paragraph-Generator #
 A program that helps you complete your english/history homework.
 
+### How to use ###
+1) Open your terminal on Linux/MacOS/Windows system. 
+2) Type in `java -jar [path to .jar file]`, or just drag the `.jar` file into the terminal in place of `[path to .jar file]`
+3) Follow the instructions.
+4) Access the generated paragraphs in the indicated directory using your favorate text editor.
+
+### Features ###
+
 #### Batch processing of term/definition pairs ####
 Tired of defining your vocabulary for us history one by one? Try the batch processing feature. Just enter all the concepts/terms/words you want to lookup and designate a delimeter and let the program do all the hard work.
 
