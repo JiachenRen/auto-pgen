@@ -8,7 +8,7 @@ import java.util.Collections;
  * Created by Jiachen on 2/27/18.
  * Wrapper class that contains the exceptions to the generator's paraphrasing engine.
  */
-public enum Exceptions {
+public enum Assets {
     IGNORED_VERBS,
     IGNORED_PATTERNS,
     IGNORED_ADVERBS,
@@ -16,7 +16,7 @@ public enum Exceptions {
 
     ArrayList<String> exceptions;
 
-    Exceptions() {
+    Assets() {
         String fileName = "/" + this.toString().toLowerCase() + ".txt";
         String[] arr = Extractor.readFromResources(fileName).split("\n");
         exceptions = new ArrayList<>();

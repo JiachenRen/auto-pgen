@@ -108,7 +108,7 @@ public class Generator {
             boolean isAbbreviation = (i > 0 && Character.toUpperCase(charArray[i - 1]) == charArray[i - 1]);
             if (!isAbbreviation && endings.contains(c) && (next == '\"' || next == ' ')) {
                 boolean endOfSentence = true;
-                for (String abbr : Exceptions.ABBREVIATIONS.list()) {
+                for (String abbr : Assets.ABBREVIATIONS.list()) {
                     if (paragraph.substring(0, i).toLowerCase().endsWith(" " + abbr.toLowerCase()))
                         endOfSentence = false;
                 }
@@ -136,7 +136,7 @@ public class Generator {
         if (sentence.split(" ").length < 4) {
             return false;
         }
-        for (String pattern : Exceptions.IGNORED_PATTERNS.list()) {
+        for (String pattern : Assets.IGNORED_PATTERNS.list()) {
             if (pattern.contains(" <ignore case>")) {
                 pattern = pattern.replace(" <ignore case>", "");
                 if (sentence.toLowerCase().contains(pattern.toLowerCase()))
@@ -161,7 +161,7 @@ public class Generator {
             if (Math.random() < ratio && (poses.size() == 1 || (poses.size() > 0 && crossContextWordSwapping))) {
                 switch (poses.get(0)) {
                     case VERB:
-                        if (!Exceptions.IGNORED_VERBS.contains(infinitiveFormOf(POS.VERB, word))) {
+                        if (!Assets.IGNORED_VERBS.contains(infinitiveFormOf(POS.VERB, word))) {
                             word = getConjugatedSynVerb(word, posSpecificSynMapping);
                             if (debug) word = "<" + word + ">";
                         }
@@ -171,7 +171,7 @@ public class Generator {
                         if (debug) word = "[" + word + "]";
                         break;
                     case ADVERB:
-                        if (!Exceptions.IGNORED_ADVERBS.contains(word.toLowerCase())) {
+                        if (!Assets.IGNORED_ADVERBS.contains(word.toLowerCase())) {
                             word = getSynAdverb(word, posSpecificSynMapping);
                             if (debug) word = "(" + word + ")";
                         }

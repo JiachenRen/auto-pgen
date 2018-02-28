@@ -10,6 +10,7 @@ public class Main {
         String raw = getTestResponse();
         Generator gen = new Generator();
         gen.setIncludeSources(true);
+        gen.setShuffleSentences(true);
         gen.setCrossContextWordSwapping(false);
         gen.setPosSpecificSynMapping(true);
         gen.setDebug(true);
