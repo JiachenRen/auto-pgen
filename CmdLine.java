@@ -17,7 +17,7 @@ public class CmdLine {
     private static Scanner scan = new Scanner(System.in);
     private static int minSentences = 3;
     private static int maxSentences = 7;
-    private static boolean swapVerbs = true;
+    private static boolean swapWords = true;
     private static boolean crossContextWordSwapping = false;
     private static boolean shuffleSentences;
     private static boolean citeSources;
@@ -30,7 +30,7 @@ public class CmdLine {
         cyan.println("Do you wish to customize the paragraph generator? [Y/N]");
         if (bool()) customize();
         boldGreen.println("Initializing automatic paragraph generator...");
-        gen = new Generator(swapVerbs, swapRatio);
+        gen = new Generator(swapWords, swapRatio);
         gen.setCrossContextWordSwapping(crossContextWordSwapping);
         gen.setShuffleSentences(shuffleSentences);
         gen.setIncludeSources(citeSources);
@@ -80,13 +80,14 @@ public class CmdLine {
         shuffleSentences = bool();
         boldBlack.println("Cite Sources [Y/N]");
         citeSources = bool();
-        boldBlack.println("Verb Swapping [Y/N]");
-        swapVerbs = bool();
+        boldBlack.println("Word Swapping [Y/N]");
+        swapWords = bool();
         cyan.println("Continue to customize advanced features? [Y/N]");
         if (bool()) {
+            //TODO: separate configuration for verbs, nouns, and adjectives
             boldYellow.println("Do you wish to enable cross context word swapping(e.g. swap verbs with relevant nouns)? [Y/N]");
             crossContextWordSwapping = bool();
-            boldYellow.println("Ratio of verbs to be swapped out [0.0 - 1.0]: ");
+            boldYellow.println("Ratio of words to be swapped out [0.0 - 1.0]: ");
             swapRatio = decimal(0, 1);
         }
     }

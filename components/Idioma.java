@@ -123,9 +123,8 @@ public class Idioma {
     }
 
     /**
-     *
-     * @param pos part of speech of the word
-     * @param word word in which a synonym is going to be derived from
+     * @param pos       part of speech of the word
+     * @param word      word in which a synonym is going to be derived from
      * @param exclusive whether or not to return synonyms that have exclusively the designated part of speech
      * @return an ArrayList containing synonyms
      * @throws JWNLException some unknown WordNet internal error
@@ -147,5 +146,72 @@ public class Idioma {
             }
         }
         return synonyms;
+    }
+
+    static String getSynAdjective(String adjective) {
+        try {
+            ArrayList<String> synonyms = getSynonyms(POS.ADJECTIVE, adjective, true);
+            if (synonyms.size() == 0) return adjective; //no synonyms found
+            boldGreen.print("[adjective] ");
+            boldBlack.print(adjective);
+            String replacement = getRandom(synonyms);
+            boldBlue.print(" [synonym] ");
+            boldBlack.println(replacement + " ");
+            return replacement;
+        } catch (JWNLException e) {
+            e.printStackTrace();
+        }
+        return adjective;
+    }
+
+    private static String getRandom(ArrayList<String> pool) {
+        return pool.get((int) (pool.size() * Math.random()));
+    }
+
+    static String getConjugatedSynVerb(String verb) {
+        VerbTense verbTense = getVerbTense(verb);
+        ArrayList<String> synonyms = null;
+        try {
+            synonyms = getSynonyms(POS.VERB, verb, true); //TODO: make exclusivity as an option.
+        } catch (JWNLException e) {
+            e.printStackTrace();
+        }
+        if (verbTense != null && synonyms != null && synonyms.size() > 0) {
+            boldGreen.print("[verb] ");
+            boldBlack.print(verb + " ");
+            boldYellow.print("[tense] ");
+            boldBlack.print(verbTense + " ");
+            String selected = getRandom(synonyms);
+            boldBlue.print("[synonym] ");
+            boldBlack.print(selected + " ");
+            String postfix = "";
+            if (selected.contains(" ")) {
+                int idx = selected.indexOf(" ");
+                postfix = selected.substring(idx);
+                selected = selected.substring(0, idx);
+            }
+            WordElement wordElement = lexicon.getWord(selected, LexicalCategory.VERB);
+            switch (verbTense) {
+                case GERUND:
+                    verb = conjugate(wordElement, Form.PRESENT_PARTICIPLE);
+                    break;
+                case PAST_PARTICIPLE:
+                    verb = conjugate(wordElement, Form.PAST_PARTICIPLE);
+                    break;
+                case PAST:
+                    verb = conjugate(wordElement, Tense.PAST);
+                    break;
+                case THIRD_PERSON_SINGULAR:
+                    verb = conjugate(wordElement, Tense.PRESENT);
+                    break;
+                case INFINITIVE:
+                    verb = selected;
+                    break;
+            }
+            verb += postfix;
+            boldGreen.print("[conjugated] ");
+            boldBlack.println(verb + " ");
+            return verb;
+        } else return verb;
     }
 }

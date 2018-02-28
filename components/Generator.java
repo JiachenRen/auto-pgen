@@ -1,12 +1,6 @@
 package components;
 
-import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.*;
-
-import simplenlg.features.Form;
-import simplenlg.features.Tense;
-import simplenlg.framework.LexicalCategory;
-import simplenlg.framework.WordElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,7 +16,7 @@ import static components.ColoredPrinters.*;
 public class Generator {
 
     private boolean crossContextWordSwapping;
-    private boolean swapVerbs;
+    private boolean swapWords;
     private boolean shuffleSentences;
     private boolean includeSources;
     private double swapRatio;
@@ -55,9 +49,9 @@ public class Generator {
         this(true, 1);
     }
 
-    public Generator(boolean swapVerbs, double swapRatio) {
+    public Generator(boolean swapWords, double swapRatio) {
         this.crossContextWordSwapping = false;
-        this.swapVerbs = swapVerbs;
+        this.swapWords = swapWords;
         this.swapRatio = swapRatio;
     }
 
@@ -89,7 +83,7 @@ public class Generator {
         final String[] paragraph = {""};
         for (int i = 0; i < pool.size(); i++) {
             String sentence = pool.get(i);
-            if (swapVerbs) sentence = replaceVerbs(sentence, swapRatio);
+            if (swapWords) sentence = replaceWords(sentence, swapRatio);
             paragraph[0] += sentence;
             if (i == numSentences - 1) break;
         }
@@ -161,8 +155,7 @@ public class Generator {
         return true;
     }
 
-
-    private String replaceVerbs(String org, double ratio) {
+    private String replaceWords(String org, double ratio) {
         String words[] = org.split(" ");
         String output = "";
         for (String word : words) {
@@ -172,53 +165,13 @@ public class Generator {
                 punctuation = lastLetter;
                 word = word.substring(0, word.length() - 1);
             }
-
-            if (((crossContextWordSwapping && is(POS.VERB, word)) || isExclusively(POS.VERB, word)) && Math.random() < ratio) {
-                VerbTense verbTense = getVerbTense(word);
-                ArrayList<String> synonyms = null;
-                try {
-                    synonyms = getSynonyms(POS.VERB, word, true); //TODO: make exclusivity as an option.
-                } catch (JWNLException e) {
-                    e.printStackTrace();
-                }
-                String infinitiveForm = infinitiveFormOf(POS.VERB, word);
-                if (!ignoredVerbs.contains(infinitiveForm) && verbTense != null && synonyms != null && synonyms.size() > 0) {
-                    boldGreen.print("[original] ");
-                    boldBlack.print(word + " ");
-                    boldYellow.print("[tense] ");
-                    boldBlack.print(verbTense + " ");
-                    String selected = synonyms.get((int) (synonyms.size() * Math.random()));
-                    boldBlue.print("[synonym] ");
-                    boldBlack.print(selected + " ");
-                    String postfix = "";
-                    if (selected.contains(" ")) {
-                        int idx = selected.indexOf(" ");
-                        postfix = selected.substring(idx);
-                        selected = selected.substring(0, idx);
-                    }
-                    WordElement wordElement = lexicon.getWord(selected, LexicalCategory.VERB);
-                    switch (verbTense) {
-                        case GERUND:
-                            word = conjugate(wordElement, Form.PRESENT_PARTICIPLE);
-                            break;
-                        case PAST_PARTICIPLE:
-                            word = conjugate(wordElement, Form.PAST_PARTICIPLE);
-                            break;
-                        case PAST:
-                            word = conjugate(wordElement, Tense.PAST);
-                            break;
-                        case THIRD_PERSON_SINGULAR:
-                            word = conjugate(wordElement, Tense.PRESENT);
-                            break;
-                        case INFINITIVE:
-                            word = selected;
-                            break;
-                    }
-                    word += postfix;
-                    boldGreen.print("[conjugated] ");
-                    boldBlack.println(word + " ");
-                    if (debug) word = "<" + word + ">";
-                }
+            if (Math.random() > ratio) continue;
+            if (isExclusively(POS.VERB, word) && !ignoredVerbs.contains(infinitiveFormOf(POS.VERB, word))) {
+                word = getConjugatedSynVerb(word);
+                if (debug) word = "<" + word + ">";
+            } else if (isExclusively(POS.ADJECTIVE, word)) {
+                word = getSynAdjective(word);
+                if (debug) word = "[" + word + "]";
             }
             output += word + punctuation + " ";
         }
