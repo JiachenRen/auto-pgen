@@ -1,7 +1,7 @@
 # Auto-Paragraph-Generator #
-A program that helps you complete your english/history homework. 
+A program that helps you complete your english/history homework. Just kidding. This program is for RESEARCH purposes ONLY.
 
-**USE AT YOUR OWN RISK, I DO NOT ASSUME ANY RESPONSIBILITIES.**
+**USE AT YOUR OWN RISK (HOPEFULLY FOR RESEARCH PURPOSES), I DO NOT ASSUME ANY RESPONSIBILITIES.**
 
 ### How to use ###
 1) Download the latest version Auto.Paragraph.Generator.jar from releases tab.
@@ -19,7 +19,7 @@ Tired of defining your vocabulary for us history one by one? Try the batch proce
 Invalid sentences are automatically filtered so they won't appear in your paragraph.
 ![Obfuscation Demonstration](https://raw.githubusercontent.com/JiachenRen/Auto-Paragraph-Generator/master/documents/screenshots/invalid_sentence_filtration.png)
 
-#### Automatic obfuscation to pass plagerism check! ####
+#### Automatic Obfuscation ####
 The program utilizes WordNet, SimpleNLG, and CoreNLP to analyze source paragraph and swap out verbs and adjectives with their synonyms. 
 ![Obfuscation Demonstration](https://raw.githubusercontent.com/JiachenRen/Auto-Paragraph-Generator/master/documents/screenshots/obfuscation.png)
 
