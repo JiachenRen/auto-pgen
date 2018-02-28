@@ -95,7 +95,7 @@ public class CmdLine {
             boldYellow.println("Cross Context Word Swapping [Y/N]");
             crossContextWordSwapping = bool();
             boldYellow.println("Part of Speech Specific Synonym Mapping [Y/N]");
-            crossContextWordSwapping = bool();
+            posSpecificSynMapping = bool();
             boldYellow.println("Ratio of words to be swapped out [0.0 - 1.0]: ");
             swapRatio = decimal(0, 1);
         }
