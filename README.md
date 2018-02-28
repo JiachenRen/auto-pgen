@@ -1,5 +1,6 @@
 # Auto-Paragraph-Generator #
 A program that helps you complete your english/history homework. 
+
 **USE AT YOUR OWN RISK, I DO NOT ASSUME ANY RESPONSIBILITIES.**
 
 ### How to use ###
