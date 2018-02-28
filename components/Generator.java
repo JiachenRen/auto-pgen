@@ -62,7 +62,8 @@ public class Generator {
             sentences.addAll(obfuscated);
             final int num = i;
             if (includeSources) {
-                boldGreen.println("Generating sources...");
+                boldBlue.print("[source cited] ");
+                boldBlack.println(toSuperscript(num + 1) + item.getLink());
                 pool.addAll(sentences.stream()
                         .map(sentence -> sentence.endsWith(" ") ?
                                 sentence.substring(0, sentence.length() - 1) + toSuperscript(num + 1) + " " :

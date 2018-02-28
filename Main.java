@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         String raw = getTestResponse();
         Generator gen = new Generator();
-        gen.setIncludeSources(false);
+        gen.setIncludeSources(true);
         gen.setCrossContextWordSwapping(false);
         gen.setPosSpecificSynMapping(true);
         gen.setDebug(true);
