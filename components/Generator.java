@@ -16,31 +16,16 @@ import static components.ColoredPrinters.*;
 public class Generator {
 
     private boolean crossContextWordSwapping;
+    private boolean posSpecificSynMapping;
     private boolean swapWords;
     private boolean shuffleSentences;
     private boolean includeSources;
     private double swapRatio;
     private boolean debug = false;
     private static String SUPER_SCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
-    private static ArrayList<String> ignoredVerbs;
-    private static ArrayList<String> ignoredPatterns;
-    private static ArrayList<String> abbreviations;
     private static ArrayList<Character> endings;
 
     static {
-        String[] arr = Extractor.readFromResources("/ignored_verbs.txt").split("\n");
-        ignoredVerbs = new ArrayList<>();
-        Collections.addAll(ignoredVerbs, arr);
-
-        arr = Extractor.readFromResources("/ignored_patterns.txt").split("\n");
-        ignoredPatterns = new ArrayList<>();
-        Collections.addAll(ignoredPatterns, arr);
-
-        arr = Extractor.readFromResources("/abbreviations.txt").split("\n");
-        abbreviations = new ArrayList<>();
-        Collections.addAll(abbreviations, arr);
-
-
         endings = new ArrayList<>();
         Collections.addAll(endings, '.', '!', '?');
     }
@@ -53,6 +38,7 @@ public class Generator {
         this.crossContextWordSwapping = false;
         this.swapWords = swapWords;
         this.swapRatio = swapRatio;
+        posSpecificSynMapping = true;
     }
 
     private String toSuperscript(int num) {
@@ -69,6 +55,11 @@ public class Generator {
         for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
             ArrayList<String> sentences = getSentences(item.getSnippet());
+            List<String> obfuscated = sentences.stream().map(sentence ->
+                    replaceWords(sentence, swapRatio))
+                    .collect(Collectors.toList());
+            sentences.clear();
+            sentences.addAll(obfuscated);
             final int num = i;
             if (includeSources) {
                 boldGreen.println("Generating sources...");
@@ -83,7 +74,6 @@ public class Generator {
         final String[] paragraph = {""};
         for (int i = 0; i < pool.size(); i++) {
             String sentence = pool.get(i);
-            if (swapWords) sentence = replaceWords(sentence, swapRatio);
             paragraph[0] += sentence;
             if (i == numSentences - 1) break;
         }
@@ -107,7 +97,6 @@ public class Generator {
 
     private ArrayList<String> getSentences(String paragraph) {
         ArrayList<String> sentences = new ArrayList<>();
-        boldGreen.println("Extracting sentences from sources...");
         String sentence = "";
         char[] charArray = paragraph.toCharArray();
         for (int i = 0; i < charArray.length; i++) {
@@ -118,15 +107,17 @@ public class Generator {
             boolean isAbbreviation = (i > 0 && Character.toUpperCase(charArray[i - 1]) == charArray[i - 1]);
             if (!isAbbreviation && endings.contains(c) && (next == '\"' || next == ' ')) {
                 boolean endOfSentence = true;
-                for (String abbr : abbreviations) {
+                for (String abbr : Exceptions.ABBREVIATIONS.list()) {
                     if (paragraph.substring(0, i).toLowerCase().endsWith(" " + abbr.toLowerCase()))
                         endOfSentence = false;
                 }
                 if (endOfSentence) {
                     sentence += c + "" + next;
-                    if (isValidSentence(sentence))
+                    if (isValidSentence(sentence)) {
+                        boldGreen.print("[accepted] ");
+                        boldBlack.println(sentence);
                         sentences.add(sentence);
-                    else {
+                    } else {
                         boldRed.print("[filtered] ");
                         boldBlack.println(sentence);
                     }
@@ -144,7 +135,7 @@ public class Generator {
         if (sentence.split(" ").length < 4) {
             return false;
         }
-        for (String pattern : ignoredPatterns) {
+        for (String pattern : Exceptions.IGNORED_PATTERNS.list()) {
             if (pattern.contains(" <ignore case>")) {
                 pattern = pattern.replace(" <ignore case>", "");
                 if (sentence.toLowerCase().contains(pattern.toLowerCase()))
@@ -165,13 +156,26 @@ public class Generator {
                 punctuation = lastLetter;
                 word = word.substring(0, word.length() - 1);
             }
-            if (Math.random() > ratio) continue;
-            if (isExclusively(POS.VERB, word) && !ignoredVerbs.contains(infinitiveFormOf(POS.VERB, word))) {
-                word = getConjugatedSynVerb(word);
-                if (debug) word = "<" + word + ">";
-            } else if (isExclusively(POS.ADJECTIVE, word)) {
-                word = getSynAdjective(word);
-                if (debug) word = "[" + word + "]";
+            ArrayList<POS> poses = getPos(word);
+            if (Math.random() < ratio && (poses.size() == 1 || (poses.size() > 0 && crossContextWordSwapping))) {
+                switch (poses.get(0)) {
+                    case VERB:
+                        if (!Exceptions.IGNORED_VERBS.contains(infinitiveFormOf(POS.VERB, word))) {
+                            word = getConjugatedSynVerb(word, posSpecificSynMapping);
+                            if (debug) word = "<" + word + ">";
+                        }
+                        break;
+                    case ADJECTIVE:
+                        word = getSynAdjective(word, posSpecificSynMapping);
+                        if (debug) word = "[" + word + "]";
+                        break;
+                    case ADVERB:
+                        if (!Exceptions.IGNORED_ADVERBS.contains(word.toLowerCase())) {
+                            word = getSynAdverb(word, posSpecificSynMapping);
+                            if (debug) word = "(" + word + ")";
+                        }
+                        break;
+                }
             }
             output += word + punctuation + " ";
         }
@@ -192,5 +196,9 @@ public class Generator {
 
     public void setDebug(boolean b) {
         debug = b;
+    }
+
+    public void setPosSpecificSynMapping(boolean posSpecificSynMapping) {
+        this.posSpecificSynMapping = posSpecificSynMapping;
     }
 }

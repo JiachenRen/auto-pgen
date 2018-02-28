@@ -19,6 +19,7 @@ public class CmdLine {
     private static int maxSentences = 7;
     private static boolean swapWords = true;
     private static boolean crossContextWordSwapping = false;
+    private static boolean posSpecificSynMapping = true;
     private static boolean shuffleSentences;
     private static boolean citeSources;
     private static double swapRatio = 0.7;
@@ -32,6 +33,7 @@ public class CmdLine {
         boldGreen.println("Initializing automatic paragraph generator...");
         gen = new Generator(swapWords, swapRatio);
         gen.setCrossContextWordSwapping(crossContextWordSwapping);
+        gen.setPosSpecificSynMapping(posSpecificSynMapping);
         gen.setShuffleSentences(shuffleSentences);
         gen.setIncludeSources(citeSources);
         cyan.println("Please enter topics (the program will accept any designated delimiters); enter [done] to finish.");
@@ -84,8 +86,15 @@ public class CmdLine {
         swapWords = bool();
         cyan.println("Continue to customize advanced features? [Y/N]");
         if (bool()) {
+            boldRed.println("This applies to the following two customizations: for Cross Context Word Swapping, " +
+                    "enter [No] for better quality but less variety. Be aware that if you " +
+                    "select no, you may not pass the plagiarism check. Selecting [Yes] would ensure originality by sacrificing " +
+                    "overall quality of the paragraph. Enabling Part of Speech Specific Synonym Mapping would result in an " +
+                    "improvement of paragraph quality while disabling it would result in more variety.");
             //TODO: separate configuration for verbs, nouns, and adjectives
-            boldYellow.println("Do you wish to enable cross context word swapping(e.g. swap verbs with relevant nouns)? [Y/N]");
+            boldYellow.println("Cross Context Word Swapping [Y/N]");
+            crossContextWordSwapping = bool();
+            boldYellow.println("Part of Speech Specific Synonym Mapping [Y/N]");
             crossContextWordSwapping = bool();
             boldYellow.println("Ratio of words to be swapped out [0.0 - 1.0]: ");
             swapRatio = decimal(0, 1);

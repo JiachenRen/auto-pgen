@@ -10,6 +10,8 @@ public class Main {
         String raw = getTestResponse();
         Generator gen = new Generator();
         gen.setIncludeSources(false);
+        gen.setCrossContextWordSwapping(false);
+        gen.setPosSpecificSynMapping(true);
         gen.setDebug(true);
         String paragraph = gen.generateSimpleParagraph(Item.extractItemsFrom(raw), 20);
         boldRed.println(paragraph);

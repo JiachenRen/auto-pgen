@@ -148,11 +148,17 @@ public class Idioma {
         return synonyms;
     }
 
-    static String getSynAdjective(String adjective) {
+    /**
+     * TODO: don't forget to conjugate back! "largest" should be replaced with "most prominent", but now it returns "prominent"
+     * @param adjective        the synonyms are going to be derived from this adjective
+     * @param exclusiveResults whether or not to return synonyms that can only be used as adjectives
+     * @return a randomly selected adjective
+     */
+    static String getSynAdjective(String adjective, boolean exclusiveResults) {
         try {
-            ArrayList<String> synonyms = getSynonyms(POS.ADJECTIVE, adjective, true);
+            ArrayList<String> synonyms = getSynonyms(POS.ADJECTIVE, adjective, exclusiveResults);
             if (synonyms.size() == 0) return adjective; //no synonyms found
-            boldGreen.print("[adjective] ");
+            boldCyan.print("[adjective] ");
             boldBlack.print(adjective);
             String replacement = getRandom(synonyms);
             boldBlue.print(" [synonym] ");
@@ -164,20 +170,46 @@ public class Idioma {
         return adjective;
     }
 
+    /**
+     * @param adverb           the synonyms are going to be derived from this adverb
+     * @param exclusiveResults whether or not to return synonyms that can only be used as adverbs
+     * @return a randomly selected adverb
+     */
+    static String getSynAdverb(String adverb, boolean exclusiveResults) {
+        try {
+            ArrayList<String> synonyms = getSynonyms(POS.ADVERB, adverb, exclusiveResults);
+            if (synonyms.size() == 0) return adverb; //no synonyms found
+            boldCyan.print("[adverb] ");
+            boldBlack.print(adverb);
+            String replacement = getRandom(synonyms);
+            boldBlue.print(" [synonym] ");
+            boldBlack.println(replacement + " ");
+            return replacement;
+        } catch (JWNLException e) {
+            e.printStackTrace();
+        }
+        return adverb;
+    }
+
     private static String getRandom(ArrayList<String> pool) {
         return pool.get((int) (pool.size() * Math.random()));
     }
 
-    static String getConjugatedSynVerb(String verb) {
+    /**
+     * @param verb             the synonyms are going to be derived from this verb
+     * @param exclusiveResults whether or not to return synonyms that can only be used as verbs
+     * @return a randomly selected and conjugated verb that matches the original tense
+     */
+    static String getConjugatedSynVerb(String verb, boolean exclusiveResults) {
         VerbTense verbTense = getVerbTense(verb);
         ArrayList<String> synonyms = null;
         try {
-            synonyms = getSynonyms(POS.VERB, verb, true); //TODO: make exclusivity as an option.
+            synonyms = getSynonyms(POS.VERB, verb, exclusiveResults);
         } catch (JWNLException e) {
             e.printStackTrace();
         }
         if (verbTense != null && synonyms != null && synonyms.size() > 0) {
-            boldGreen.print("[verb] ");
+            boldCyan.print("[verb] ");
             boldBlack.print(verb + " ");
             boldYellow.print("[tense] ");
             boldBlack.print(verbTense + " ");
