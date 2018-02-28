@@ -241,7 +241,7 @@ public class Idioma {
                     break;
             }
             verb += postfix;
-            boldGreen.print("[conjugated] ");
+            boldCyan.print("[conjugated] ");
             boldBlack.println(verb + " ");
             return verb;
         } else return verb;

@@ -59,16 +59,16 @@ public class Item {
             for (String line : lines) {
                 if (line.contains("title")) {
                     title = extractContent(line);
-                    boldGreen.print("[title] ");
-                    boldBlack.println(title);
+                    boldBlack.print("[title] ");
+                    normal.println(title);
                 } else if (line.contains("link")) {
                     link = extractContent(line);
-                    boldGreen.print("[link] ");
-                    boldBlack.println(link);
+                    boldBlack.print("[link] ");
+                    normal.println(link);
                 } else if (line.contains("snippet")) {
                     snippet = extractContent(line).replace("\\n", "").replace("\\\"", "\"");
-                    boldGreen.print("[snippet] ");
-                    boldBlack.println(snippet);
+                    boldBlack.print("[snippet] ");
+                    normal.println(snippet);
                 } else if (line.contains("displayLink")) {
                     displayLink = extractContent(line);
                 }

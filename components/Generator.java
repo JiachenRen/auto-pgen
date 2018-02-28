@@ -118,7 +118,7 @@ public class Generator {
                         boldBlack.println(sentence);
                         sentences.add(sentence);
                     } else {
-                        boldRed.print("[filtered] ");
+                        boldRed.print("[rejected] ");
                         boldBlack.println(sentence);
                     }
                     sentence = "";
