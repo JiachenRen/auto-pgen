@@ -6,7 +6,7 @@ import java.util.Collections;
 
 /**
  * Created by Jiachen on 2/27/18.
- * Wrapper class that contains the exceptions to the generator's paraphrasing engine.
+ * Wrapper class that contains the assets to the generator's paraphrasing engine.
  */
 public enum Assets {
     IGNORED_VERBS,
@@ -14,13 +14,13 @@ public enum Assets {
     IGNORED_ADVERBS,
     ABBREVIATIONS;
 
-    ArrayList<String> exceptions;
+    ArrayList<String> assets;
 
     Assets() {
         String fileName = "/" + this.toString().toLowerCase() + ".txt";
         String[] arr = Extractor.readFromResources(fileName).split("\n");
-        exceptions = new ArrayList<>();
-        Collections.addAll(exceptions, arr);
+        assets = new ArrayList<>();
+        Collections.addAll(assets, arr);
 //        this.list().forEach(System.out::println);
     }
 
@@ -29,6 +29,6 @@ public enum Assets {
     }
 
     ArrayList<String> list() {
-        return exceptions;
+        return assets;
     }
 }
