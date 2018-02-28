@@ -1,11 +1,12 @@
 # Auto-Paragraph-Generator #
-A program that helps you complete your english/history homework.
+A program that helps you complete your english/history homework. USE AT YOUR OWN RISK, I DO NOT ASSUME ANY RESPONSIBILITIES.
 
 ### How to use ###
-1) Open your terminal on Linux/MacOS/Windows system. 
-2) Type in `java -jar [path to .jar file]`, or just drag the `.jar` file into the terminal in place of `[path to .jar file]`
-3) Follow the instructions.
-4) Access the generated paragraphs in the indicated directory using your favorate text editor.
+1) Download the latest version Auto.Paragraph.Generator.jar from releases tab.
+2) Open your terminal on Linux/MacOS/Windows system. 
+3) Type in `java -jar [path to .jar file]`, or just drag the `.jar` file into the terminal in place of `[path to .jar file]`
+4) Follow the instructions.
+5) Access the generated paragraphs in the indicated directory using your favorate text editor.
 
 ### Features ###
 
