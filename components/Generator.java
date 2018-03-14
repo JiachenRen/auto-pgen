@@ -25,6 +25,10 @@ public class Generator {
     private static String SUPER_SCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
     private static ArrayList<Character> endings;
 
+    public boolean shuffleSentences() {
+        return shuffleSentences;
+    }
+
     static {
         endings = new ArrayList<>();
         Collections.addAll(endings, '.', '!', '?');

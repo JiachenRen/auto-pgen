@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
@@ -14,8 +15,11 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
@@ -75,6 +79,29 @@
                         </Label>
                   <VBox layoutX="14.0" layoutY="48.0" prefHeight="491.0" prefWidth="193.0" spacing="5.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
                      <children>
+                        <Label text="Number of Sentences:" />
+                        <Separator prefWidth="200.0" />
+                        <GridPane prefHeight="80.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Min:" />
+                              <Label text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                              <ScrollBar fx:id="minNumSentences" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                              <Label text="Max:" GridPane.rowIndex="2" />
+                              <Label text="10" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                              <ScrollBar fx:id="maxNumSentences" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                        <Label text="Spacer" visible="false" />
                         <Label text="Delimeter:" />
                         <Separator prefWidth="200.0" />
                         <TextField fx:id="delimiter" promptText="e.g. &quot;\n&quot; for separating by lines" />
@@ -104,8 +131,8 @@
                         <AnchorPane id="Content" prefHeight="545.0" prefWidth="430.0">
                             <children>
                                 <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Input" textAlignment="CENTER" textFill="$x2" wrapText="false" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
-                                <TextArea fx:id="topics" layoutX="14.0" layoutY="48.0" prefHeight="180.0" prefWidth="406.0" promptText="Enter your topics here." AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-                                <Button fx:id="generate" layoutX="329.0" layoutY="12.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="91.0" text="Generate" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0" />
+                                <TextArea fx:id="topics" layoutX="14.0" layoutY="48.0" prefHeight="180.0" prefWidth="406.0" promptText="Enter your topics here." wrapText="true" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                                <Button fx:id="generate" layoutX="329.0" layoutY="12.0" mnemonicParsing="false" onMouseClicked="#generateButtonPressed" prefHeight="27.0" prefWidth="91.0" text="Generate" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0" />
                                 <Label alignment="CENTER" layoutX="25.0" layoutY="246.0" style="&#10;" text="Output" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="240.0">
                                     <font>
                                         <Font size="18.0" fx:id="x11" />
@@ -114,7 +141,7 @@
                                         <Color blue="0.624" green="0.624" red="0.624" fx:id="x21" />
                                     </textFill>
                                 </Label>
-                                <TextArea fx:id="generatedPars" layoutX="5.0" layoutY="283.0" prefHeight="180.0" prefWidth="406.0" promptText="Generated paragraphs appear here." AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="274.0" />
+                                <TextArea fx:id="generatedPars" layoutX="5.0" layoutY="283.0" prefHeight="180.0" prefWidth="406.0" promptText="Generated paragraphs appear here." wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="274.0" />
                             </children>
                         </AnchorPane>
                     </content>

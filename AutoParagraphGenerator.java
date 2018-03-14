@@ -25,7 +25,7 @@ public class AutoParagraphGenerator extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("apg.fxml"));
         Parent root = loader.load();
         controller = loader.getController();
-
+        controller.initListeners(generator);
 
         primaryStage.setTitle("Automatic Paragraph Generator");
         primaryStage.setScene(new Scene(root, 900, 600));
