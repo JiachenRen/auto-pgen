@@ -20,7 +20,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="APGController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -77,21 +77,21 @@
                      <children>
                         <Label text="Delimeter:" />
                         <Separator prefWidth="200.0" />
-                        <TextField promptText="e.g. &quot;\n&quot; for separating by lines" />
+                        <TextField fx:id="delimiter" promptText="e.g. &quot;\n&quot; for separating by lines" />
                         <Label text="Subject Area:" />
                         <Separator prefWidth="200.0" />
-                        <TextField promptText="e.g. US History" />
+                        <TextField fx:id="subjectArea" promptText="e.g. US History" />
                         <Label text="Spacer" visible="false" />
                         <Label text="Features:" />
                         <Separator prefWidth="200.0" />
-                        <CheckBox mnemonicParsing="false" text="Replacement of synonyms" />
-                        <CheckBox mnemonicParsing="false" text="Shuffling of sentences" />
-                        <CheckBox mnemonicParsing="false" text="Citation of sources" />
+                        <CheckBox fx:id="synReplacement" mnemonicParsing="false" text="Replacement of synonyms" />
+                        <CheckBox fx:id="sentenceShuffling" mnemonicParsing="false" text="Shuffling of sentences" />
+                        <CheckBox fx:id="citeSources" mnemonicParsing="false" text="Citation of sources" />
                         <Label text="Spacer" visible="false" />
                         <Label text="Advanced Features:" />
                         <Separator prefWidth="200.0" />
-                        <CheckBox mnemonicParsing="false" text="Cross context word swapping" />
-                        <CheckBox mnemonicParsing="false" text="POS specific synonym mapping" />
+                        <CheckBox fx:id="crsCtxWordSwapping" mnemonicParsing="false" text="Cross context word swapping" />
+                        <CheckBox fx:id="posSpecSynMapping" mnemonicParsing="false" text="POS specific synonym mapping" />
                      </children>
                      <opaqueInsets>
                         <Insets />
@@ -104,8 +104,8 @@
                         <AnchorPane id="Content" prefHeight="545.0" prefWidth="430.0">
                             <children>
                                 <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Input" textAlignment="CENTER" textFill="$x2" wrapText="false" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
-                                <TextArea layoutX="14.0" layoutY="48.0" prefHeight="180.0" prefWidth="406.0" promptText="Enter your topics here." AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-                                <Button layoutX="329.0" layoutY="12.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="91.0" text="Generate" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0" />
+                                <TextArea fx:id="topics" layoutX="14.0" layoutY="48.0" prefHeight="180.0" prefWidth="406.0" promptText="Enter your topics here." AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                                <Button fx:id="generate" layoutX="329.0" layoutY="12.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="91.0" text="Generate" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0" />
                                 <Label alignment="CENTER" layoutX="25.0" layoutY="246.0" style="&#10;" text="Output" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="240.0">
                                     <font>
                                         <Font size="18.0" fx:id="x11" />
@@ -114,7 +114,7 @@
                                         <Color blue="0.624" green="0.624" red="0.624" fx:id="x21" />
                                     </textFill>
                                 </Label>
-                                <TextArea layoutX="5.0" layoutY="283.0" prefHeight="180.0" prefWidth="406.0" promptText="Generated paragraphs appear here." AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="274.0" />
+                                <TextArea fx:id="generatedPars" layoutX="5.0" layoutY="283.0" prefHeight="180.0" prefWidth="406.0" promptText="Generated paragraphs appear here." AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="274.0" />
                             </children>
                         </AnchorPane>
                     </content>
