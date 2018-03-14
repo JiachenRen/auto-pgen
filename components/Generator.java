@@ -202,4 +202,12 @@ public class Generator {
     public void setPosSpecificSynMapping(boolean posSpecificSynMapping) {
         this.posSpecificSynMapping = posSpecificSynMapping;
     }
+
+    public void setSwapRatio(double d) {
+        swapRatio = d;
+    }
+
+    public void setSwapWords(boolean swapWords) {
+        this.swapWords = swapWords;
+    }
 }

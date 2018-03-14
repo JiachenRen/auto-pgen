@@ -61,11 +61,11 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" VBox.vgrow="ALWAYS">
+        <SplitPane dividerPositions="0.29175946547884185, 0.8006681514476615" focusTraversable="true" VBox.vgrow="ALWAYS">
             <items>
                 <AnchorPane>
                     <children>
-                        <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" style="&#10;" text="Settings" textAlignment="CENTER" wrapText="false">
+                        <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" style="&#10;" text="Configuration" textAlignment="CENTER" wrapText="false">
                             <font>
                                 <Font size="18.0" fx:id="x1" />
                             </font>
@@ -76,13 +76,22 @@
                   <VBox layoutX="14.0" layoutY="48.0" prefHeight="491.0" prefWidth="193.0" spacing="5.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
                      <children>
                         <Label text="Delimeter:" />
-                        <TextField promptText="Enter delimiter here" />
+                        <Separator prefWidth="200.0" />
+                        <TextField promptText="e.g. &quot;\n&quot; for separating by lines" />
+                        <Label text="Subject Area:" />
+                        <Separator prefWidth="200.0" />
+                        <TextField promptText="e.g. US History" />
+                        <Label text="Spacer" visible="false" />
                         <Label text="Features:" />
                         <Separator prefWidth="200.0" />
-                        <CheckBox mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox mnemonicParsing="false" text="CheckBox" />
+                        <CheckBox mnemonicParsing="false" text="Replacement of synonyms" />
+                        <CheckBox mnemonicParsing="false" text="Shuffling of sentences" />
+                        <CheckBox mnemonicParsing="false" text="Citation of sources" />
+                        <Label text="Spacer" visible="false" />
+                        <Label text="Advanced Features:" />
+                        <Separator prefWidth="200.0" />
+                        <CheckBox mnemonicParsing="false" text="Cross context word swapping" />
+                        <CheckBox mnemonicParsing="false" text="POS specific synonym mapping" />
                      </children>
                      <opaqueInsets>
                         <Insets />
