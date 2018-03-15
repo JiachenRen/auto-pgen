@@ -1,7 +1,18 @@
-# Auto-Paragraph-Generator 
+# Automatic Paragraph Generator (APG)
 A program that helps you complete your english/history homework. Just kidding. This program is for RESEARCH purposes ONLY.
 
 **USE AT YOUR OWN RISK (HOPEFULLY FOR RESEARCH PURPOSES), I DO NOT ASSUME ANY RESPONSIBILITIES.**
+# What's New
+Finally, I have managed to squeeze some time out to build a user interface for those who just hate command lines. Introducing APG V 3.0 - paragraph generation made faster and better with the core functionalities provided by its unique internal archetecture. The natural language unit was built by combining **extjwnl**, **SimpleNLG**, and **CoreNLP** library, all of which are open source projects that are well maintained & updated. 
+
+![Obfuscation Demonstration](https://raw.githubusercontent.com/JiachenRen/Auto-Paragraph-Generator/master/documents/screenshots/ui_1.png)
+
+The user interface is pretty straight-forward, so just play around with it!
+
+
+
+
+# If you prefer command line instead...
 
 ## How to use 
 1) Download the latest version Auto.Paragraph.Generator.jar from releases tab.
