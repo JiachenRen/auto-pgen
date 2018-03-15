@@ -94,11 +94,11 @@
                           </rowConstraints>
                            <children>
                               <Label text="Min:" />
-                              <Label text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                              <ScrollBar fx:id="minNumSentences" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                              <Label fx:id="minLabel" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                              <ScrollBar fx:id="minNumSentences" max="20.0" min="1.0" value="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
                               <Label text="Max:" GridPane.rowIndex="2" />
-                              <Label text="10" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                              <ScrollBar fx:id="maxNumSentences" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                              <Label fx:id="maxLabel" text="10" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                              <ScrollBar fx:id="maxNumSentences" max="20.0" min="1.0" value="10.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                         <Label text="Spacer" visible="false" />
@@ -155,7 +155,7 @@
         </SplitPane>
         <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
             <children>
-                <Label maxHeight="1.7976931348623157E308" text="Left status" HBox.hgrow="ALWAYS">
+                <Label fx:id="leftStatus" maxHeight="1.7976931348623157E308" text="Left status" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="11.0" fx:id="x3" />
                     </font>
