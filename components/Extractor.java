@@ -16,13 +16,14 @@ public class Extractor {
     private static String[] API_KEYS = readFromResources("/api_keys.txt").split("\n");
     private static String ENCODING = "UTF-8";
     private static boolean debug = true;
+    private static int keyIndex = 0;
 
     public static String search(String keyword) {
         try {
             String cached = cache(keyword);
             if (!cached.equals("")) return cached;
 
-            URL url = new URL("https://www.googleapis.com/customsearch/v1?key=" + API_KEYS[0] + "&cx=013036536707430787589:_pqjad5hr1a&q=" + URLEncoder.encode(keyword, ENCODING) + "&alt=json");
+            URL url = new URL("https://www.googleapis.com/customsearch/v1?key=" + getNextKey() + "&cx=013036536707430787589:_pqjad5hr1a&q=" + URLEncoder.encode(keyword, ENCODING) + "&alt=json");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
@@ -40,6 +41,17 @@ public class Extractor {
             e.printStackTrace();
             return "";
         }
+    }
+
+    /**
+     * Iterate through available API key sets so they won't get used up.
+     *
+     * @return API key
+     */
+    private static String getNextKey() {
+        String key = API_KEYS[keyIndex % API_KEYS.length];
+        keyIndex++;
+        return key;
     }
 
     private static String cache(String keyword) {
