@@ -36,12 +36,26 @@ public class APGController {
     public Label leftStatus;
     public Label minLabel;
     public Label maxLabel;
+    public ProgressBar progressBar;
+    public Label percentageLabel;
+
+    private static int count;
 
     private Generator generator;
 
-    void initListeners(Generator generator) {
+    void init(Generator generator) {
         this.generator = generator;
+        this.progressBar.setVisible(false);
+        this.percentageLabel.setVisible(false);
+
+        sentenceShuffling.setSelected(generator.shuffleSentences());
+        synReplacement.setSelected(generator.isSwapWords());
+        citeSources.setSelected(generator.citesSources());
+        crsCtxWordSwapping.setSelected(generator.performsCCWS());
+        posSpecSynMapping.setSelected(generator.performsPSSM());
+
         l("Initializing event listeners... ");
+
         sentenceShuffling.selectedProperty().addListener((observable, oldValue, newValue) -> generator.setShuffleSentences(newValue));
         synReplacement.selectedProperty().addListener((observable, oldValue, newValue) -> generator.setSwapWords(newValue));
         citeSources.selectedProperty().addListener((observable, oldValue, newValue) -> generator.setIncludeSources(newValue));
@@ -61,11 +75,15 @@ public class APGController {
         int minSentences = (int) this.minNumSentences.getValue();
         int maxSentences = (int) this.maxNumSentences.getValue();
         generatedPars.setText("");
+        progressBar.setVisible(true);
+        percentageLabel.setVisible(true);
+        count = 0;
 
         String output = "";
-        for (String t : topics) {
+        for (int i = 0; i < topics.length; i++) {
+            String t = topics[i];
             final String[] topic = {t};
-            Task<String> task = new Task<String>() {
+            Task<String> task = new Task<String>() { //accelerated requests with multi-threading.
                 @Override
                 public String call() throws Exception {
                     if (topic[0].endsWith("\n")) topic[0] = topic[0].substring(0, topic[0].length() - 1);
@@ -76,10 +94,19 @@ public class APGController {
                 }
             };
             task.setOnSucceeded(event -> {
-                leftStatus.setText("Working on \"" + topic[0] + "\" ...");
+                leftStatus.setText("Working on " + (count + 1) + " of " + topics.length + ", " + topic[0] + " ...");
+                double progress = (count + 1) / (double) topics.length;
+                percentageLabel.setText(String.valueOf((int) (progress * 100)) + "%");
+                progressBar.setProgress(progress);
                 String result = event.getSource().getValue().toString();
                 String updatedContent = generatedPars.getText() + topic[0] + "\n" + result + "\n\n";
                 generatedPars.setText(updatedContent);
+                if (count == topics.length - 1) {
+                    leftStatus.setText("Done. ");
+                    progressBar.setVisible(false);
+                    percentageLabel.setVisible(false);
+                }
+                count++;
             });
             new Thread(task).start();
         }

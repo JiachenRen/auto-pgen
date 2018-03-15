@@ -25,6 +25,18 @@ public class Generator {
     private static String SUPER_SCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
     private static ArrayList<Character> endings;
 
+    public boolean citesSources() {
+        return includeSources;
+    }
+
+    public boolean performsPSSM() {
+        return posSpecificSynMapping;
+    }
+
+    public boolean performsCCWS() {
+        return crossContextWordSwapping;
+    }
+
     public boolean shuffleSentences() {
         return shuffleSentences;
     }
@@ -213,5 +225,9 @@ public class Generator {
 
     public void setSwapWords(boolean swapWords) {
         this.swapWords = swapWords;
+    }
+
+    public boolean isSwapWords() {
+        return swapWords;
     }
 }
