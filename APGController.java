@@ -54,8 +54,8 @@ public class APGController {
         citeSources.selectedProperty().addListener((observable, oldValue, newValue) -> generator.setIncludeSources(newValue));
         crsCtxWordSwapping.selectedProperty().addListener((observable, oldValue, newValue) -> generator.setCrossContextWordSwapping(newValue));
         posSpecSynMapping.selectedProperty().addListener((observable, oldValue, newValue) -> generator.setPosSpecificSynMapping(newValue));
-        minNumSentences.valueProperty().addListener((observable, oldValue, newValue) -> minLabel.setText(String.valueOf(minNumSentences.getValue())));
-        maxNumSentences.valueProperty().addListener((observable, oldValue, newValue) -> maxLabel.setText(String.valueOf(maxNumSentences.getValue())));
+        minNumSentences.valueProperty().addListener((observable, oldValue, newValue) -> minLabel.setText(String.valueOf((int) minNumSentences.getValue())));
+        maxNumSentences.valueProperty().addListener((observable, oldValue, newValue) -> maxLabel.setText(String.valueOf((int) maxNumSentences.getValue())));
     }
 
     public void generateButtonPressed(MouseEvent mouseEvent) {
