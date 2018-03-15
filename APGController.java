@@ -1,18 +1,11 @@
 import components.Extractor;
 import components.Generator;
 import components.Item;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
-
-import static components.ColoredPrinters.boldGreen;
-import static components.ColoredPrinters.boldYellow;
-import static components.ColoredPrinters.magenta;
 
 /**
  * Created by Jiachen on 3/14/18.
@@ -80,8 +73,7 @@ public class APGController {
         count = 0;
 
         String output = "";
-        for (int i = 0; i < topics.length; i++) {
-            String t = topics[i];
+        for (String t : topics) {
             final String[] topic = {t};
             Task<String> task = new Task<String>() { //accelerated requests with multi-threading.
                 @Override

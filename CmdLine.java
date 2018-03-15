@@ -13,6 +13,7 @@ import static components.ColoredPrinters.*;
  * Created by Jiachen on 2/25/18.
  * Commandline Application: Automatic Paragraph Generator.
  */
+@SuppressWarnings("ALL")
 public class CmdLine {
     private static Scanner scan = new Scanner(System.in);
     private static int minSentences = 3;

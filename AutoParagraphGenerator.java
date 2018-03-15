@@ -17,14 +17,13 @@ public class AutoParagraphGenerator extends Application {
         launch(args);
     }
     public static Generator generator;
-    public static APGController controller;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
         generator = new Generator();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("apg.fxml"));
         Parent root = loader.load();
-        controller = loader.getController();
+        APGController controller = loader.getController();
         controller.init(generator);
 
         primaryStage.setTitle("Automatic Paragraph Generator");
