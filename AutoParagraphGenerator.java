@@ -30,6 +30,8 @@ public class AutoParagraphGenerator extends Application {
         primaryStage.setScene(new Scene(root, 900, 600));
         primaryStage.show();
 
+        controller.topics.requestFocus();
+
 
 
     }
